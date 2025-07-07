@@ -22,6 +22,8 @@ dependencies = [
     "beautifulsoup4==4.12.3",
     "html2text==2025.4.15",
     "aioimaplib==2.0.1",
+    "typer>=0.16.0,<1.0.0",
+    "rich>=13.0.0,<14.0.0",
 ]
 
 [project.optional-dependencies]
@@ -43,7 +45,7 @@ test = [
 ]
 
 [project.scripts]
-relay = "cli.main:cli"
+relay = "cli.main:app"
 
 [project.urls]
 homepage = "https://invoxflow.com"

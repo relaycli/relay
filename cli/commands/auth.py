@@ -30,7 +30,7 @@ def add():
     console.print("[bold blue]Setting up new IMAP account[/bold blue]")
 
     # Get account name
-    name = Prompt.ask("Account name", default="default")
+    name = Prompt.ask("Account name")
 
     # Get email address
     email = Prompt.ask("Email address")
