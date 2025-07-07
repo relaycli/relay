@@ -1,0 +1,93 @@
+# High-level service labels
+'service: python':
+- changed-files:
+  - any-glob-to-any-file: relay/*
+
+'service: cli':
+- changed-files:
+  - any-glob-to-any-file: cli/*
+
+'service: docs':
+- changed-files:
+  - any-glob-to-any-file: docs/*
+
+# Secondary
+'ext: ci':
+- changed-files:
+  - any-glob-to-any-file: .github/*
+
+'ext: cursor':
+- changed-files:
+  - any-glob-to-any-file:
+    - '.cursor/*'
+
+'ext: vscode':
+- changed-files:
+  - any-glob-to-any-file:
+    - '.vscode/*'
+
+'ext: style':
+- changed-files:
+  - any-glob-to-any-file:
+    - '**/.pre-commit-config.yaml'
+
+'topic: docs':
+- changed-files:
+  - any-glob-to-any-file:
+    - '**/README.md'
+    - '**/CONTRIBUTING.md'
+    - '**/CODE_OF_CONDUCT.md'
+    - '**/Makefile'
+    - '**/.env.example'
+    - '**/*.mdx'
+
+# Orchestration
+'func: build':
+- changed-files:
+  - any-glob-to-any-file:
+    - '**/pyproject.toml'
+
+
+########################################################
+# Library-specific
+########################################################
+
+'module: models':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/models/*
+
+'module: auth':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/auth/*
+
+'module: providers':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/providers/*
+
+'module: client':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/client.py
+
+'module: config':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/config.py
+
+'module: exceptions':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/exceptions.py
+# Tests
+'ext: tests':
+- changed-files:
+  - any-glob-to-any-file:
+    - tests/*
+
+
+########################################################
+# CLI-specific
+########################################################

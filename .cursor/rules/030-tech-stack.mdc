@@ -1,0 +1,27 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# Tech stack
+
+This is a thorough description of technology choices for the project. We want to stay lean and avoid making project maintenance too complicated.
+
+## General
+- Makefile
+
+## Backend API
+- Python 3.11+
+- Pydantic for model validation
+- uv for dependency management
+- ty for type checking
+- ruff for code styling & format
+- pytest as testing framework
+
+
+## CLI
+- Typer
+
+## Documentation
+- Mintlify

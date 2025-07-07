@@ -1,0 +1,50 @@
+---
+title: "FAQ"
+description: "Find answers to the most frequent questions of the community."
+icon: "circle-question"
+---
+
+Check out the answers to the most frequently asked questions about Invoxflow. If you weren't able to find an answer to your question, connect with the team on [Discord](https://discord.gg/T4zbT7RcVy) or [GitHub](https://github.com/invoxflow/invoxflow).
+
+<Accordion title="What problem does Invoxflow solve?">
+  Building apps that **read, classify, and react to e-mail** is still painful—rate-limited Gmail APIs or raw IMAP sockets.
+  Invoxflow gives you a modern JSON/HTTP layer you can run locally or in our cloud, so you ship mail-powered features in minutes.
+</Accordion>
+
+<Accordion title="How is this different from Gmail API or Nylas-style SaaS email APIs?">
+  * Gmail API → Google-only, strict quotas.
+  * Typical SaaS email APIs → cloud-locked, proprietary, often read-only.
+  **Invoxflow is open-source infrastructure:** IMAP + SMTP under the hood, REST/Webhooks on top. Run it anywhere; upgrade to our cloud only for push sync and AI add-ons.
+</Accordion>
+
+<Accordion title="Which providers are supported?">
+  Any inbox that speaks IMAP/SMTP: Gmail, Outlook, Yahoo, FastMail, or your own Dovecot/Postfix server.
+  The same endpoint shape works across all of them.
+</Accordion>
+
+<Accordion title="Do you store my e-mail passwords?">
+  * **Self-host:** secrets stay on your disk, encrypted with your OS keychain.
+  * **Cloud:** we store OAuth tokens when available; otherwise the password is client-encrypted—our servers see only ciphertext.
+</Accordion>
+
+<Accordion title="Can I self-host? And what does the cloud cost?">
+  Yes. `docker compose up` gives you the core for free under Apache-2.0.
+  Our managed cloud is pay-as-you-go: e-mail sync is free; you pay only for optional extras like voice TTS/STT and large-model triage.
+</Accordion>
+
+<Accordion title="Does it handle multiple inboxes?">
+  Unlimited. Each account you connect appears as its own `/accounts/{id}` namespace, and you can stream events from all of them in a single webhook.
+</Accordion>
+
+<Accordion title="What can I build with it?">
+  * Voice-controlled inboxes
+  * Smart auto-responders
+  * Billing/receipt parsers
+  * Support-desk bots
+  * Custom e-mail clients or analytics dashboards
+  If it needs to read or act on mail, you can prototype it in under 50 lines.
+</Accordion>
+
+<Accordion title="How do I migrate from Gmail API?">
+  Swap your token for IMAP credentials (or Gmail’s OAuth IMAP scope) and point your HTTP calls to `/messages` and `/threads`—the response shape matches Gmail’s list/get endpoints. Our step-by-step guide covers pagination, labels, and webhooks.
+</Accordion>

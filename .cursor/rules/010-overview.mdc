@@ -1,0 +1,37 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# Project overview
+This project's goal is to enable builders to create email-based apps
+
+## Success metrics
+- Reduction in time-to-zero-inbox for daily emails
+- Number of active users of email apps
+
+## Functional requirements
+### General
+- Stay lean, keep a minimal set of well-picked dependencies. The leanest codebase can lead to the greatest achievements
+- Keep the codebase modular
+- Respect Don't Repeat Yourself (DRY) rules
+
+### Relay library
+- Handle email account management (IMAP, Gmail, Outlook)
+- Implements all common email operations that you can experience with email clients
+- Credentials are stored locally
+- The implementation should be optimized for speed and concept persistence
+
+### Relay CLI
+- Wrap the library in a CLI interface
+- The UI should be designed so that it becomes easy for developers to manage their emails using their terminal
+
+### Documentation
+- Fast track the installation, usage and contribution of users
+
+### Backend API
+- Allow users to host online a REST API to develop email-based services
+- Handle user authentication (OAuth 2 using JWT as bearer tokens)
+- Handle OAuth connections (Google account)
+- Enable the fetching and labeling of emails (metadata in relational database + image/video in storage)

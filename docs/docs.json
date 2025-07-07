@@ -1,0 +1,154 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Invoxflow",
+  "colors": {
+    "primary": "#16A34A",
+    "light": "#07C983",
+    "dark": "#15803D"
+  },
+  "favicon": "/logo/dark.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "documentation/getting-started/introduction",
+              "documentation/getting-started/quickstart",
+              "documentation/getting-started/concepts"
+            ]
+          },
+          {
+            "group": "Community & support",
+            "pages": [
+              "documentation/community/roadmap",
+              "documentation/community/contributing",
+              "documentation/community/faq",
+              "documentation/community/changelog",
+              "documentation/community/support"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "User management",
+            "pages": [
+              "api-reference/user/read-me",
+              "api-reference/user/update-name",
+              "api-reference/user/update-picture",
+              "api-reference/user/delete-picture"
+            ]
+          },
+          {
+            "group": "Email accounts",
+            "pages": [
+              "api-reference/accounts/connect-account",
+              "api-reference/accounts/list-accounts",
+              "api-reference/accounts/read-account",
+              "api-reference/accounts/update-account",
+              "api-reference/accounts/disconnect-account"
+            ]
+          },
+          {
+            "group": "API keys",
+            "pages": [
+              "api-reference/keys/create-key",
+              "api-reference/keys/list-keys",
+              "api-reference/keys/revoke-key"
+            ]
+          },
+          {
+            "group": "Inbox",
+            "pages": [
+              "api-reference/inbox/fetch-emails"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "groups": [
+          {
+            "group": "Changelog",
+            "pages": [
+              "changelog/overview"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://docs.invoxflow.com",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Community",
+          "href": "https://discord.gg/T4zbT7RcVy",
+          "icon": "discord"
+        },
+        {
+          "anchor": "Status page",
+          "href": "https://status.invoxflow.com",
+          "icon": "heart-pulse"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://invoxflow.com"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:hi@invoxflow.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://invoxflow.com/dashboard"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/invoxflow",
+      "github": "https://github.com/invoxflow",
+      "linkedin": "https://linkedin.com/company/invoxflow"
+    }
+  },
+  "api": {
+    "openapi": "https://api.invoxflow.com/api/v1/openapi.json",
+    "mdx": {
+      "server": "https://api.invoxflow.com",
+      "auth": {
+        "method": "bearer"
+      }
+    }
+  },
+  "seo": {
+    "metatags": {
+      "og:title": "Invoxflow",
+      "og:description": "Email infrastructure for modern applications"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# Codebase structure
+
+The codebase includes several applications with separate tech stacks and folders: core library, and CLI.
+
+- `.github/`: GitHub CI configuration
+- `.cursor/rules`: rules for coding assistants
+- `./relay`: core library for email management
+- `./cli`: CLI for email management
+- [Makefile](mdc:Makefile) high-level project commands
+- [.pre-commit-config.yaml](mdc:.pre-commit-config.yaml): pre-commit configuration file
+- [pyproject.toml](mdc:pyproject.toml): project configuration file
+
+## Core library
+The core library is a Python library + CLI for sync and async email operations, organized as follows:
+- [client.py](mdc:relay/client.py): main entry point
+- [config.py](mdc:relay/config.py): configuration management
+- [exceptions.py](mdc:relay/exceptions.py): SDK-specific exceptions
+- `models/`: data models (translatable to other languages)
+- `providers/`: email provider implementations
+    - `gmail/`: Gmail connection
+    - `outlook/`: Outlook connection
+    - `imap/`: IMAP connection
+    - `smtp/`: SMTP connection
+- `auth/`: authentication system (creds, oauth flow, secure storage)

@@ -1,0 +1,20 @@
+{
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll": "explicit",
+      "source.unusedImports": "explicit"
+    },
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit",
+          "source.fixAll": "explicit"
+        }
+    },
+    "ruff.configuration": "./pyproject.toml",
+    "mypy.enabled": false,
+    "ty.path": [
+        "relay"
+    ]
+}
