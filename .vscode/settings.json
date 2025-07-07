@@ -10,7 +10,8 @@
         "editor.codeActionsOnSave": {
           "source.organizeImports": "explicit",
           "source.fixAll": "explicit"
-        }
+        },
+        "editor.inlayHints.enabled": "offUnlessPressed"
     },
     "ruff.configuration": "./pyproject.toml",
     "mypy.enabled": false,
