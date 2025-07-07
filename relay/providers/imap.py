@@ -14,8 +14,9 @@ from socket import gaierror
 from typing import Any, cast
 
 from bs4 import BeautifulSoup
-from fastapi import HTTPException, status
 from html2text import html2text
+
+from ..exceptions import AuthenticationError, ServerConnectionError, ValidationError
 
 EMAIL_PATTERN = r"<[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}>"
 
@@ -84,14 +85,14 @@ class IMAPClient:
         try:
             self._imap = IMAP4_SSL(imap_server, imap_port, **kwargs)
         except gaierror:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="IMAP server not found")
+            raise ServerConnectionError("IMAP server not found")
         # Prevent ASCII encoding errors
         # cf. https://github.com/trac-hacks/tracsql/issues/3
         password = password.replace("\xa0", " ")
         try:
             self._imap.login(email_address, password)
         except IMAP4.error:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid IMAP credentials")
+            raise AuthenticationError("Invalid IMAP credentials")
 
         self.config = EMAIL_PROVIDERS[provider]
 
@@ -102,7 +103,7 @@ class IMAPClient:
         try:
             self._imap.select(folder, readonly=readonly)
         except IMAP4.error:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid folder: {folder}")
+            raise ValidationError(f"Invalid folder: {folder}")
 
     def list_flags(self, **kwargs) -> list[str]:
         self._select(readonly=False, **kwargs)
@@ -115,7 +116,7 @@ class IMAPClient:
         status_, res = self._imap.uid("SEARCH", None, "UNSEEN" if unseen_only else "ALL")  # type: ignore[arg-type]
         self._imap.close()
         if status_ != "OK":
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=status_)
+            raise ValidationError(status_)
         return list(reversed(res[0].decode().split()))
 
     def search_uid(self, message_id: str, **kwargs) -> str:
@@ -123,7 +124,7 @@ class IMAPClient:
         status_, res = self._imap.uid("SEARCH", None, f'HEADER Message-ID "{message_id}"')  # type: ignore[arg-type]
         self._imap.close()
         if status_ != "OK":
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=status_)
+            raise ValidationError(status_)
         return res[0].decode().split()
 
     def search_uids(self, message_ids: list[str], **kwargs) -> list[str]:
@@ -136,7 +137,7 @@ class IMAPClient:
         status_, res = self._imap.uid("SEARCH", None, reduce(lambda acc, q: f"OR ({acc}) ({q})", queries))  # type: ignore[arg-type]
         self._imap.close()
         if status_ != "OK":
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=status_)
+            raise ValidationError(status_)
         return res[0].decode().split()
 
     def fetch_message(
@@ -146,7 +147,7 @@ class IMAPClient:
         status_, content = self._imap.uid("FETCH", uid, "(RFC822)")
         self._imap.close()
         if status_ != "OK":
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=status_)
+            raise ValidationError(status_)
         message = cast(EmailMessage, message_from_bytes(content[0][1]))
         return {
             "uid": uid,
@@ -177,7 +178,7 @@ class IMAPClient:
         status_, content = self._imap.uid("FETCH", ",".join(uids), msg_parts.upper())
         self._imap.close()
         if status_ != "OK":
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=status_)
+            raise ValidationError(status_)
         parser_ = Parser()
         return [
             {"uid": uid, "headers": dict(parser_.parsestr(res[1].decode("utf-8"), headersonly=True).items())}
@@ -199,7 +200,7 @@ class IMAPClient:
         status_, content = self._imap.uid("FETCH", ",".join(uids), msg_parts.upper())
         self._imap.close()
         if status_ != "OK":
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=status_)
+            raise ValidationError(status_)
         email_messages = [cast(EmailMessage, message_from_bytes(res[1])) for res in content[::2]]
         return [
             {
