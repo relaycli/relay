@@ -80,7 +80,7 @@ class AccountStorage:
                 json.dump(json_data, f, indent=2)
 
             # Secure permissions
-            self.accounts_file.chmod(600)
+            self.accounts_file.chmod(0o600)
 
         except (OSError, ValueError) as e:
             raise StorageError(f"Failed to save accounts data: {e}")
