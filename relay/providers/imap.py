@@ -165,7 +165,7 @@ class IMAPClient:
 
     def list_email_uids(self, unseen_only: bool = False, **kwargs) -> list[str]:
         self._select(readonly=True, **kwargs)
-        status_, res = self._imap.uid("SEARCH", None, "UNSEEN" if unseen_only else "ALL")  # type: ignore[arg-type]
+        status_, res = self._imap.uid("SEARCH", None, "UNSEEN" if unseen_only else "ALL")
         self._imap.close()
         if status_ != "OK":
             raise ValidationError(status_)
@@ -173,7 +173,7 @@ class IMAPClient:
 
     def search_uid(self, message_id: str, **kwargs) -> str:
         self._select(readonly=True, **kwargs)
-        status_, res = self._imap.uid("SEARCH", None, f'HEADER Message-ID "{message_id}"')  # type: ignore[arg-type]
+        status_, res = self._imap.uid("SEARCH", None, f'HEADER Message-ID "{message_id}"')
         self._imap.close()
         if status_ != "OK":
             raise ValidationError(status_)
@@ -186,7 +186,7 @@ class IMAPClient:
             return [self.search_uid(message_ids[0], **kwargs)]
         queries = [f'HEADER Message-ID "{message_id}"' for message_id in message_ids]
         self._select(readonly=True, **kwargs)
-        status_, res = self._imap.uid("SEARCH", None, reduce(lambda acc, q: f"OR ({acc}) ({q})", queries))  # type: ignore[arg-type]
+        status_, res = self._imap.uid("SEARCH", None, reduce(lambda acc, q: f"OR ({acc}) ({q})", queries))
         self._imap.close()
         if status_ != "OK":
             raise ValidationError(status_)
@@ -334,20 +334,20 @@ def parse_email_parts(email_message: EmailMessage, include_quoted_body: bool = F
     if email_message.is_multipart():
         for part in email_message.walk():
             if part.get_content_type() == "text/plain":
-                body_plain = part.get_payload(decode=True).decode("utf-8", errors="ignore")  # type: ignore[union-attr]
+                body_plain = part.get_payload(decode=True).decode("utf-8", errors="ignore")
             # Parse HTML
             if part.get_content_type() == "text/html":
-                body_html = part.get_payload(decode=True).decode("utf-8", errors="ignore")  # type: ignore[union-attr]
+                body_html = part.get_payload(decode=True).decode("utf-8", errors="ignore")
             # Parse attachments
             if isinstance(part.get_content_disposition(), str) and part.get_content_disposition() == "attachment":
                 attachments.append({
                     "filename": part.get_filename(),
                     "content_type": part.get_content_type(),
-                    "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),  # type: ignore[arg-type]
+                    "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
                     "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
                 })
     else:
-        body_plain = email_message.get_payload(decode=True).decode("utf-8", errors="ignore")  # type: ignore[union-attr]
+        body_plain = email_message.get_payload(decode=True).decode("utf-8", errors="ignore")
 
     if body_plain and not include_quoted_body:
         body_plain = clear_quoted_body(body_plain)
