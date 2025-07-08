@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Invoxflow",
+  "theme": "linden",
+  "name": "Relay",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -27,46 +27,7 @@
               "documentation/community/roadmap",
               "documentation/community/contributing",
               "documentation/community/faq",
-              "documentation/community/changelog",
               "documentation/community/support"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "User management",
-            "pages": [
-              "api-reference/user/read-me",
-              "api-reference/user/update-name",
-              "api-reference/user/update-picture",
-              "api-reference/user/delete-picture"
-            ]
-          },
-          {
-            "group": "Email accounts",
-            "pages": [
-              "api-reference/accounts/connect-account",
-              "api-reference/accounts/list-accounts",
-              "api-reference/accounts/read-account",
-              "api-reference/accounts/update-account",
-              "api-reference/accounts/disconnect-account"
-            ]
-          },
-          {
-            "group": "API keys",
-            "pages": [
-              "api-reference/keys/create-key",
-              "api-reference/keys/list-keys",
-              "api-reference/keys/revoke-key"
-            ]
-          },
-          {
-            "group": "Inbox",
-            "pages": [
-              "api-reference/inbox/fetch-emails"
             ]
           }
         ]
@@ -87,7 +48,7 @@
       "anchors": [
         {
           "anchor": "Documentation",
-          "href": "https://docs.invoxflow.com",
+          "href": "https://docs.relaycli.com",
           "icon": "book-open-cover"
         },
         {
@@ -97,7 +58,7 @@
         },
         {
           "anchor": "Status page",
-          "href": "https://status.invoxflow.com",
+          "href": "https://status.relaycli.com",
           "icon": "heart-pulse"
         }
       ]
@@ -106,40 +67,31 @@
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg",
-    "href": "https://invoxflow.com"
+    "href": "https://relaycli.com"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@invoxflow.com"
+        "href": "mailto:hi@relaycli.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://invoxflow.com/dashboard"
+      "href": "https://relaycli.com/dashboard"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/invoxflow",
-      "github": "https://github.com/invoxflow",
-      "linkedin": "https://linkedin.com/company/invoxflow"
-    }
-  },
-  "api": {
-    "openapi": "https://api.invoxflow.com/api/v1/openapi.json",
-    "mdx": {
-      "server": "https://api.invoxflow.com",
-      "auth": {
-        "method": "bearer"
-      }
+      "x": "https://x.com/relaycli",
+      "github": "https://github.com/relaycli",
+      "linkedin": "https://linkedin.com/company/relaycli"
     }
   },
   "seo": {
     "metatags": {
-      "og:title": "Invoxflow",
+      "og:title": "Relay",
       "og:description": "Email infrastructure for modern applications"
     }
   },
