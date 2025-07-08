@@ -9,10 +9,10 @@ module-root = ""
 [project]
 name = "relay"
 version = "0.1.0.dev0"
-description = "open-source IMAP-native replacement for Gmail API"
+description = "Open-source IMAP-native replacement for Gmail API"
 requires-python = ">=3.11,<4.0"
 license = { file = "LICENSE" }
-authors = [{ name = "François-Guillaume Fernandez", email = "support@relay.dev" }]
+authors = [{ name = "Relay team", email = "support@relaycli.com" }]
 readme = "README.md"
 keywords = ["cli", "imap", "smtp", "gmail", "outlook", "email", "inbox"]
 dependencies = [
@@ -24,6 +24,34 @@ dependencies = [
     "aioimaplib==2.0.1",
     "typer>=0.16.0,<1.0.0",
     "rich>=13.0.0,<14.0.0",
+]
+classifiers = [
+    # https://pypi.org/classifiers/
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Framework :: Pydantic",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Communications :: Email",
+    "Topic :: Communications :: Email :: Post-Office",
+    "Topic :: Communications :: Email :: Post-Office :: IMAP",
+    "Topic :: Communications :: Email :: Post-Office :: POP3",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Typing :: Typed",
 ]
 
 [project.optional-dependencies]
@@ -38,8 +66,6 @@ quality = [
 test = [
     "pytest>=8.3.3,<9.0.0",
     "pytest-asyncio>=0.17.0,<1.0.0",
-    # https://github.com/geekan/MetaGPT/issues/1617
-    "httpx>=0.23.0,<0.28.0",
     "pytest-cov>=4.0.0,<5.0.0",
     "pytest-pretty>=1.0.0,<2.0.0"
 ]
@@ -48,11 +74,11 @@ test = [
 relay = "cli.main:app"
 
 [project.urls]
-homepage = "https://invoxflow.com"
-repository = "https://github.com/frgfm/relay"
-documentation = "https://docs.invoxflow.com"
-issues = "https://github.com/frgfm/relay/issues"
-releasenotes = "https://github.com/frgfm/relay/releases"
+homepage = "https://relaycli.com"
+repository = "https://github.com/relaycli/relay"
+documentation = "https://docs.relaycli.com"
+issues = "https://github.com/relaycli/relay/issues"
+releasenotes = "https://github.com/relaycli/relay/releases"
 logo = "https://zugjkckdxhiamdlkxfmv.supabase.co/storage/v1/object/public/assets//logo_dark.svg"
 
 [tool.coverage.run]
