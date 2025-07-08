@@ -5,6 +5,7 @@
 
 """Messages CLI commands."""
 
+from datetime import datetime
 from typing import Annotated
 
 import typer
@@ -15,12 +16,30 @@ from relay.auth.account import AccountManager
 from relay.exceptions import AccountNotFoundError, AuthenticationError, ServerConnectionError
 from relay.models.message import MessageSummary
 
+from ..utils import AliasGroup
+
 console = Console()
-app = typer.Typer(help="Email message commands")
+app = typer.Typer(help="Email message commands", cls=AliasGroup)
 
 
-@app.command("list")
-@app.command("ls")
+def format_timestamp_to_utc(timestamp_str: str) -> str:
+    """Convert ISO timestamp to UTC for display."""
+    if not timestamp_str or "T" not in timestamp_str:
+        return timestamp_str
+
+    try:
+        # Parse ISO format with timezone
+        dt = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+        # Convert to UTC
+        dt_utc = dt.utctimetuple()
+        # Format as readable UTC time
+        return f"{dt_utc.tm_year:04d}-{dt_utc.tm_mon:02d}-{dt_utc.tm_mday:02d} {dt_utc.tm_hour:02d}:{dt_utc.tm_min:02d}:{dt_utc.tm_sec:02d} UTC"
+    except (ValueError, AttributeError):
+        # Fallback to original string if parsing fails
+        return timestamp_str
+
+
+@app.command("list | ls")
 def list_messages(
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
     count: Annotated[int, typer.Option("--count", "-c", help="Number of messages to fetch")] = 20,
@@ -64,19 +83,14 @@ def list_messages(
         # Create table - let high priority columns auto-size, limit truncatable ones
         table = Table(title="Messages (Demo Mode)")
         table.add_column("UID", style="cyan", no_wrap=True)
-        table.add_column("Timestamp", style="blue", no_wrap=True)
+        table.add_column("Timestamp", style="blue", no_wrap=True, width=24)
         table.add_column("From", style="green", no_wrap=True)
         table.add_column("Subject", style="bold", max_width=30)
         table.add_column("Snippet", style="dim", max_width=25)
 
         for msg in sample_messages:
-            # Format timestamp to show date and time without timezone
-            timestamp_str = msg.date
-            if "T" in timestamp_str:
-                # Convert ISO format to readable format: 2025-01-10T10:30:00+00:00 -> 2025-01-10 10:30:00
-                date_part, time_part = timestamp_str.split("T")
-                time_without_tz = time_part.split("+")[0].split("-")[0]  # Remove timezone
-                timestamp_str = f"{date_part} {time_without_tz}"
+            # Convert timestamp to UTC for display
+            timestamp_str = format_timestamp_to_utc(msg.date)
 
             # Truncate only subject and snippet - let UID, timestamp, from display fully
             subject = msg.subject[:27] + "..." if len(msg.subject) > 30 else msg.subject
@@ -133,19 +147,14 @@ def list_messages(
         # Create table - let high priority columns auto-size, limit truncatable ones
         table = Table(title=f"Messages from {account_info.email}")
         table.add_column("UID", style="cyan", no_wrap=True)
-        table.add_column("Timestamp", style="blue", no_wrap=True)
+        table.add_column("Timestamp", style="blue", no_wrap=True, width=24)
         table.add_column("From", style="green", no_wrap=True)
         table.add_column("Subject", style="bold", max_width=30)
         table.add_column("Snippet", style="dim", max_width=25)
 
         for msg in message_summaries:
-            # Format timestamp to show date and time without timezone
-            timestamp_str = msg.date
-            if "T" in timestamp_str:
-                # Convert ISO format to readable format: 2025-01-10T10:30:00+00:00 -> 2025-01-10 10:30:00
-                date_part, time_part = timestamp_str.split("T")
-                time_without_tz = time_part.split("+")[0].split("-")[0]  # Remove timezone
-                timestamp_str = f"{date_part} {time_without_tz}"
+            # Convert timestamp to UTC for display
+            timestamp_str = format_timestamp_to_utc(msg.date)
 
             # Truncate only subject and snippet - let UID, timestamp, from display fully
             subject = msg.subject[:27] + "..." if len(msg.subject) > 30 else msg.subject
@@ -173,8 +182,7 @@ def list_messages(
         raise typer.Exit(1)
 
 
-@app.command("read")
-@app.command("cat")
+@app.command("read | cat")
 def read_message(
     uid: Annotated[str, typer.Argument(help="Message UID to read")],
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
@@ -209,7 +217,7 @@ def read_message(
         # Display message details
         console.print("\n[bold blue]Message Details[/bold blue]")
         console.print(f"[cyan]UID:[/cyan] {message['uid']}")
-        console.print(f"[cyan]Timestamp:[/cyan] {message.get('date', 'N/A')}")
+        console.print(f"[cyan]Timestamp:[/cyan] {format_timestamp_to_utc(message.get('date', 'N/A'))}")
         console.print(f"[cyan]Subject:[/cyan] {message.get('subject', 'N/A')}")
 
         # Extract sender from headers
@@ -255,9 +263,7 @@ def read_message(
         raise typer.Exit(1)
 
 
-@app.command("search")
-@app.command("find")
-@app.command("grep")
+@app.command("search | find | grep")
 def search_messages(
     query: Annotated[str, typer.Argument(help="Search query")],
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
@@ -324,19 +330,14 @@ def search_messages(
         # Create table - same format as list command
         table = Table(title=f"Search Results for '{query}' in {account_info.email}")
         table.add_column("UID", style="cyan", no_wrap=True)
-        table.add_column("Timestamp", style="blue", no_wrap=True)
+        table.add_column("Timestamp", style="blue", no_wrap=True, width=24)
         table.add_column("From", style="green", no_wrap=True)
         table.add_column("Subject", style="bold", max_width=30)
         table.add_column("Snippet", style="dim", max_width=25)
 
         for msg in message_summaries:
-            # Format timestamp to show date and time without timezone
-            timestamp_str = msg.date
-            if "T" in timestamp_str:
-                # Convert ISO format to readable format: 2025-01-10T10:30:00+00:00 -> 2025-01-10 10:30:00
-                date_part, time_part = timestamp_str.split("T")
-                time_without_tz = time_part.split("+")[0].split("-")[0]  # Remove timezone
-                timestamp_str = f"{date_part} {time_without_tz}"
+            # Convert timestamp to UTC for display
+            timestamp_str = format_timestamp_to_utc(msg.date)
 
             # Truncate only subject and snippet - let UID, timestamp, from display fully
             subject = msg.subject[:27] + "..." if len(msg.subject) > 30 else msg.subject

@@ -21,8 +21,10 @@ from relay.exceptions import (
 )
 from relay.models.account import PROVIDER_CONFIGS, AccountCreate, EmailProvider
 
+from ..utils import AliasGroup
+
 console = Console()
-app = typer.Typer(help="Account management commands")
+app = typer.Typer(help="Account management commands", cls=AliasGroup)
 
 
 @app.command("add")
@@ -121,8 +123,7 @@ def connect_account() -> None:
         raise typer.Exit(1)
 
 
-@app.command("list")
-@app.command("ls")
+@app.command("list | ls")
 def list_accounts() -> None:
     """List all configured accounts."""
     try:
@@ -152,8 +153,7 @@ def list_accounts() -> None:
         raise typer.Exit(1)
 
 
-@app.command("remove")
-@app.command("rm")
+@app.command("remove | rm")
 def remove_account_connection(name: str) -> None:
     """Remove an account."""
     try:
