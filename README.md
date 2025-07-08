@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://relaycli.com"><img src="https://zugjkckdxhiamdlkxfmv.supabase.co/storage/v1/object/public/assets//logo_dark.svg" width="75" height="75"></a>
+  <a href="https://relaycli.com"><img src="https://zugjkckdxhiamdlkxfmv.supabase.co/storage/v1/object/public/assets//logo_light.svg" width="75" height="75"></a>
 </p>
 <h1 align="center">
  Relay - Claude Code meets Gmail API
