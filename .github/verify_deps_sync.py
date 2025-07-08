@@ -30,7 +30,7 @@ logger.addHandler(stream_handler)
 
 def main():
     # Retrieve & parse all deps files
-    deps_dict = {"uv": [], "ruff": [], "ty": [], "mypy": []}
+    deps_dict = {"uv": [], "ruff": [], "ty": []}
     # Parse precommit
     with Path(PRECOMMIT_CONFIG).open("r") as f:
         precommit = yaml.safe_load(f)
@@ -46,8 +46,6 @@ def main():
     for dep in pyproject["project"]["optional-dependencies"]["quality"]:
         if dep.startswith("ruff"):
             deps_dict["ruff"].append({"file": PYPROJECT_PATH, "version": dep.split("==")[1]})
-        elif dep.startswith("mypy"):
-            deps_dict["mypy"] = [{"file": PYPROJECT_PATH, "version": dep.split("==")[1]}]
         elif dep.startswith("ty"):
             deps_dict["ty"] = [{"file": PYPROJECT_PATH, "version": dep.split("==")[1]}]
 
