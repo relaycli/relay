@@ -58,7 +58,7 @@ classifiers = [
 [project.optional-dependencies]
 quality = [
     "ruff==0.12.2",
-    "ty==0.0.1-alpha.13",
+    "ty==0.0.1a14",
     "pre-commit==4.2.0"
 ]
 
