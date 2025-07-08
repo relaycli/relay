@@ -30,7 +30,7 @@ logger.addHandler(stream_handler)
 
 def main():
     # Retrieve & parse all deps files
-    deps_dict = {"uv": [], "ruff": [], "ty": []}
+    deps_dict = {"uv": [], "ruff": [], "ty": [], "mypy": []}
     # Parse precommit
     with Path(PRECOMMIT_CONFIG).open("r") as f:
         precommit = yaml.safe_load(f)
@@ -43,7 +43,7 @@ def main():
     with Path(PYPROJECT_PATH).open("rb") as f:
         pyproject = tomllib.load(f)
 
-    for dep in pyproject["tool"]["uv"]["dev-dependencies"]:
+    for dep in pyproject["project"]["optional-dependencies"]["quality"]:
         if dep.startswith("ruff"):
             deps_dict["ruff"].append({"file": PYPROJECT_PATH, "version": dep.split("==")[1]})
         elif dep.startswith("mypy"):
@@ -56,10 +56,12 @@ def main():
         with workflow_file.open("r") as f:
             workflow = yaml.safe_load(f)
             if "env" in workflow and "UV_VERSION" in workflow["env"]:
-                deps_dict["uv"].append({
-                    "file": str(workflow_file),
-                    "version": workflow["env"]["UV_VERSION"].lstrip("v"),
-                })
+                deps_dict["uv"].append(
+                    {
+                        "file": str(workflow_file),
+                        "version": workflow["env"]["UV_VERSION"].lstrip("v"),
+                    }
+                )
 
     # Assert all deps are in sync
     troubles = []
@@ -69,10 +71,12 @@ def main():
             inv_dict = {v: set() for v in versions_}
             for version in versions:
                 inv_dict[version["version"]].add(version["file"])
-            troubles.extend([
-                f"{dep}:",
-                "\n".join(f"- '{v}': {', '.join(files)}" for v, files in inv_dict.items()),
-            ])
+            troubles.extend(
+                [
+                    f"{dep}:",
+                    "\n".join(f"- '{v}': {', '.join(files)}" for v, files in inv_dict.items()),
+                ]
+            )
 
     if len(troubles) > 0:
         raise AssertionError("Some dependencies are out of sync:\n\n" + "\n".join(troubles))
