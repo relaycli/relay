@@ -57,9 +57,9 @@
           "icon": "discord"
         },
         {
-          "anchor": "Status page",
-          "href": "https://status.relaycli.com",
-          "icon": "heart-pulse"
+          "anchor": "Manifesto",
+          "href": "https://relaycli.com/manifesto",
+          "icon": "feather"
         }
       ]
     }

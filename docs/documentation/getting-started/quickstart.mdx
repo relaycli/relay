@@ -6,10 +6,6 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
 ## Build your first e-mail app (hosted cloud)
 
 <Steps>
-  <Step title="Create an Relay account">
-    [Sign-up](https://relaycli.com/auth/register) with Google / Microsoft or e-mail+password.
-    You’ll land on the **Dashboard → Accounts** screen.
-  </Step>
   <Step title="Grab your mailbox credentials">
     <Tabs>
       <Tab title="Gmail">
@@ -30,90 +26,36 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
       </Tab>
     </Tabs>
   </Step>
+  <Step title="Install the CLI">
+    <CodeGroup>
+    ```shell title="uv" icon="python"
+    uv pip install relaycli
+    ```
+    ```shell title="pip" icon="python"
+    pip install relaycli
+    ```
+    </CodeGroup>
+  </Step>
   <Step title="Connect the inbox">
-    <Tabs>
-      <Tab title="Dashboard">
-        * Head over to [Connect email account](https://relaycli.com/accounts/new)
-        * Enter your email credentials
-        * Click on "Connect account"
-      </Tab>
-      <Tab title="API">
-        Hit the endpoint to [connect your account](/api-reference/accounts/connect-account)
-      </Tab>
-    </Tabs>
+    ```shell
+    relay account add
+    ```
   </Step>
-  <Step title="Fetch your latest emails">
-    <Tabs>
-      <Tab title="Dashboard">
-        On your [account page](https://relaycli.com/accounts), click on "View details" of your mailbox. Your recent email should be displayed here
-      </Tab>
-      <Tab title="API">
-        Hit the endpoint to [fetch your account's emails](/api-reference/inbox/fetch-emails)
-      </Tab>
-    </Tabs>
+  <Step title="Try out CLI commands">
+    <CodeGroup>
+    ```shell title="fetch recent emails"
+    relay messages ls
+    ```
+    ```shell title="search your inbox"
+    relay messages grep "Pied piper"
+    ```
+    ```shell title="read a specific message"
+    relay messages cat <message_uid>
+    ```
+    </CodeGroup>
 
-  </Step>
-  <Step title="Create an API key">
-    <Tabs>
-      <Tab title="Dashboard">
-        Go to [API Keys](https://relaycli.com/settings/api-keys), click on "Create new API key", enter a name (e.g. "Email digestor"), set an expiration date, and click "Create key".
-      </Tab>
-      <Tab title="API">
-        Hit the endpoint to [fetch your account's emails](/api-reference/keys/create-key)
-      </Tab>
-    </Tabs>
-
-    <Warning>Save the API key, as it will never be possible to show it again!</Warning>
   </Step>
   <Step title="Build an email digest (optional)">
-    Check [API reference](/api-reference) and build something awesome.
-  </Step>
-</Steps>
-
-
-## Self-hosting (docker-compose)
-
-<Steps>
-  <Step title="Install prerequisites">
-    <Tabs>
-      <Tab title="Linux">
-        * [Docker](https://docs.docker.com/engine/install/)
-        * [Git](https://git-scm.com/downloads/linux)
-      </Tab>
-      <Tab title="macOS">
-        * [Docker Desktop](https://docs.docker.com/desktop/setup/install/mac-install/)
-        * [Git](https://git-scm.com/downloads/mac)
-      </Tab>
-      <Tab title="Windows">
-        * [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
-        * [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/)
-        * [Git](https://git-scm.com/downloads/win)
-      </Tab>
-    </Tabs>
-  </Step>
-  <Step title="Clone our GitHub repo">
-    ```bash
-    git clone https://github.com/invoxflow/invoxflow.git
-    cd invoxflow
-    ```
-  </Step>
-  <Step title="Create a configuration file">
-    Copy `.env.example` to `.env`:
-    ```bash
-    cp .env.example .env
-    ```
-    Edit the values of
-    ```dotenv
-    BACKEND_SUPERADMIN_EMAIL=
-    BACKEND_SUPERADMIN_PWD=
-    ```
-  </Step>
-  <Step title="Start the stack">
-    ```bash
-    make start-local
-    ```
-  </Step>
-  <Step title="Deploy on your own VPS (optional)">
-    Coming soon
+    Now it's your turn!.
   </Step>
 </Steps>
