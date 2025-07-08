@@ -11,6 +11,7 @@ from typer.core import TyperGroup
 __all__ = ["AliasGroup"]
 
 
+# cf. https://github.com/fastapi/typer/issues/132
 class AliasGroup(TyperGroup):
     _CMD_SPLIT_P = re.compile(r" ?[,|] ?")
 

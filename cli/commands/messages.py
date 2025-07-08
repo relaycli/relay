@@ -5,7 +5,7 @@
 
 """Messages CLI commands."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Annotated
 
 import typer
@@ -24,19 +24,10 @@ app = typer.Typer(help="Email message commands", cls=AliasGroup)
 
 def format_timestamp_to_utc(timestamp_str: str) -> str:
     """Convert ISO timestamp to UTC for display."""
-    if not timestamp_str or "T" not in timestamp_str:
-        return timestamp_str
-
-    try:
-        # Parse ISO format with timezone
-        dt = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
-        # Convert to UTC
-        dt_utc = dt.utctimetuple()
-        # Format as readable UTC time
-        return f"{dt_utc.tm_year:04d}-{dt_utc.tm_mon:02d}-{dt_utc.tm_mday:02d} {dt_utc.tm_hour:02d}:{dt_utc.tm_min:02d}:{dt_utc.tm_sec:02d} UTC"
-    except (ValueError, AttributeError):
-        # Fallback to original string if parsing fails
-        return timestamp_str
+    # Parse ISO format with timezone
+    dt = datetime.fromisoformat(timestamp_str)
+    # Convert to UTC and format
+    return dt.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
 
 
 @app.command("list | ls")
