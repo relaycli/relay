@@ -26,10 +26,10 @@
   </a>
 </p>
 <p align="center">
-  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/relaycli/relay?label=Release&logo=github">
-  <a href="https://hub.docker.com/repository/docker/relaycli/relay">
-    <img src="https://img.shields.io/docker/v/relaycli/relay?style=flat-square&logo=Docker&logoColor=fff&label=Docker" alt="Docker image">
+  <a href="https://pypi.org/project/relaycli/">
+    <img src="https://img.shields.io/pypi/v/relaycli.svg?logo=PyPI&logoColor=fff&style=flat-square&label=PyPI" alt="PyPi Version">
   </a>
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/relaycli/relay?label=Release&logo=github">
   <a href="https://github.com/relaycli/relay/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/relaycli/relay.svg?label=License&logoColor=fff&style=flat-square" alt="License">
   </a>
