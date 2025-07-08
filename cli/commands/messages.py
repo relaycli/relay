@@ -138,7 +138,7 @@ def _get_demo_messages() -> list[MessageSummary]:
 @_handle_common_errors
 def list_messages(
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
-    count: Annotated[int, typer.Option("--count", "-c", help="Number of messages to fetch")] = 20,
+    limit: Annotated[int, typer.Option("--limit", "-l", help="Number of messages to fetch")] = 20,
     unread_only: Annotated[bool, typer.Option("--unread", "-u", help="Show only unread messages")] = False,
     demo: Annotated[bool, typer.Option("--demo", help="Show demo data instead of real emails")] = False,
 ):
@@ -158,10 +158,10 @@ def list_messages(
     manager, client, account = _get_account_manager_and_client(account)
     account_info = manager.get_account(account)
 
-    with console.status(f"[bold green]Fetching {count} {'unread ' if unread_only else ''}messages...", spinner="dots"):
+    with console.status(f"[bold green]Fetching {limit} {'unread ' if unread_only else ''}messages...", spinner="dots"):
         # Get email UIDs
-        uids = client.list_email_uids(unseen_only=unread_only)
-        uids = uids[:count]
+        uids = list(reversed(client.list_email_uids(unseen_only=unread_only)))
+        uids = uids[: min(limit, len(uids))]
 
         if not uids:
             client.logout()
@@ -277,8 +277,15 @@ def search_messages(
         console.print(f"[yellow]No messages found containing '{query}'[/yellow]")
         return
 
-    # Convert to summary objects and display
+    # Convert to summary objects and sort by date (newest first)
     message_summaries = [MessageSummary.from_message_data(msg) for msg in matching_messages]
+
+    # Sort by date (newest first) - handle cases where date might be empty
+    message_summaries.sort(
+        key=lambda x: datetime.fromisoformat(x.date) if x.date else datetime.min.replace(tzinfo=timezone.utc),
+        reverse=True,
+    )
+
     table = create_messages_table(f"Search Results for '{query}' in {account_info.email}")
 
     for msg in message_summaries:

@@ -30,10 +30,10 @@ EMAIL_PROVIDERS = {
         "server_domains": ["gmail.com"],
         "folders": {
             "inbox": "INBOX",
-            "trash": '"[Gmail]/Trash"',
-            "spam": '"[Gmail]/Spam"',
-            "sent": '"[Gmail]/Sent Mail"',
-            "drafts": '"[Gmail]/Drafts"',
+            "trash": "[Gmail]/Trash",
+            "spam": "[Gmail]/Spam",
+            "sent": "[Gmail]/Sent Mail",
+            "drafts": "[Gmail]/Drafts",
         },
     },
     EmailProvider.OUTLOOK: {
@@ -102,18 +102,17 @@ class IMAPClient:
             raise AuthenticationError("Invalid IMAP credentials")
 
         self.provider = provider
-        self.config = EMAIL_PROVIDERS.get(provider, {})
-        if not self.config:
-            # For custom providers, create minimal config
-            self.config = {
+        self.config = EMAIL_PROVIDERS.get(
+            provider,
+            {
                 "folders": {
                     "inbox": "INBOX",
                     "trash": "Trash",
                     "spam": "Spam",
                     "sent": "Sent",
-                    "drafts": "Drafts",
                 },
-            }
+            },
+        )
 
     @staticmethod
     def _detect_provider(imap_server: str, email_address: str) -> EmailProvider:
@@ -276,7 +275,7 @@ class IMAPClient:
                 },
                 "body": parse_email_parts(message, include_quoted_body=include_quoted_body),
             }
-            for uid, message in zip(uids, email_messages, strict=True)
+            for uid, message in zip(reversed(uids), email_messages, strict=True)
         ]
 
     def mark_as_read(self, uid: str) -> None:
