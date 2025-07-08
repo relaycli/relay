@@ -8,6 +8,8 @@
 import typer
 from rich.console import Console
 
+import relay
+
 from .commands.auth import app as auth_app
 
 console = Console()
@@ -24,7 +26,7 @@ app.add_typer(auth_app, name="auth")
 @app.command()
 def version():
     """Show version information."""
-    console.print("[bold blue]Relay CLI v1.0.0[/bold blue]")
+    console.print(f"[bold blue]Relay CLI v{relay.__version__}[/bold blue]")
     console.print("Email management library and CLI")
 
 
