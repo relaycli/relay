@@ -3,7 +3,7 @@ title: 'Key concepts'
 description: 'How modern e-mail really works and the pieces we build on'
 ---
 
-<Note>Why read this? You don’t need to memorize every RFC to use Invoxflow, but a 5-minute tour of the landscape helps you debug faster — and impress friends at parties.</Note>
+<Note>Why read this? You don’t need to memorize every RFC to use Relay, but a 5-minute tour of the landscape helps you debug faster — and impress friends at parties.</Note>
 
 ## Standards & Governance
 
@@ -45,13 +45,13 @@ Body (plain text or HTML + attachments)
 | Mail Transfer Agent | MTA | Postfix, Exim | Routes SMTP traffic between domains. |
 | Mail Delivery Agent | MDA | Dovecot, Courier | Saves incoming mail to the user’s mailbox. |
 | Mail User Agent | MUA | Outlook, Thunderbird | <Tooltip tip="Graphical User Interface">GUI</Tooltip> that people click. |
-| Invoxflow | - | (open-core) | Sits between MUA and IMAP, giving dev-friendly JSON + webhooks. |
+| Relay | - | (open-core) | Sits between MUA and IMAP, giving dev-friendly JSON + webhooks. |
 
 ## Providers vs. Clients
 * Provider = organization hosting an MTA/MDA (Gmail, Outlook, Proton, your own VPS).
 * Client = anything that logs in to read or send mail (iOS Mail, Superhuman, your script).
 
-Invoxflow treats every provider the same as long as it offers IMAP/SMTP. Your code talks to a single /messages endpoint.
+Relay treats every provider the same as long as it offers IMAP/SMTP. Your code talks to a single /messages endpoint.
 
 ## Email APIs vs. Delivery APIs
 
@@ -60,11 +60,11 @@ Both provide programmable access to email-related operations.
 | Category | Examples | Focus |
 | -------- | -------- | ----- |
 | Delivery APIs | Resend, SendGrid, SES | High-volume outbound (newsletters, receipts). |
-| Interaction APIs | Invoxflow | Read, search, tag, reply, build full apps. |
+| Interaction APIs | Relay | Read, search, tag, reply, build full apps. |
 
-Use both together: Resend for blasts, Invoxflow for smart follow-ups.
+Use both together: Resend for blasts, Relay for smart follow-ups.
 
-## Key Terminology in Invoxflow
+## Key Terminology in Relay
 
 | Term | Short definition |
 | ---- | ---------------- |
