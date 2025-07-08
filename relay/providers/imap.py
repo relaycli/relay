@@ -169,7 +169,7 @@ class IMAPClient:
         self._imap.close()
         if status_ != "OK":
             raise ValidationError(status_)
-        return list(reversed(res[0].decode().split()))
+        return res[0].decode().split()
 
     def search_uid(self, message_id: str, **kwargs) -> str:
         self._select(readonly=True, **kwargs)
