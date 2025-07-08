@@ -6,6 +6,7 @@
 """Messages CLI commands."""
 
 from datetime import datetime, timezone
+from enum import Enum
 from typing import Annotated, Any, Callable
 
 import typer
@@ -13,7 +14,7 @@ from rich.console import Console
 from rich.table import Table
 
 from relay.auth.account import AccountManager
-from relay.exceptions import AccountNotFoundError, AuthenticationError, ServerConnectionError
+from relay.exceptions import AccountNotFoundError, AuthenticationError, ServerConnectionError, ValidationError
 from relay.models.message import MessageSummary
 
 from ..utils import AliasGroup, create_messages_table
@@ -97,40 +98,6 @@ def _add_message_to_table(table: Table, msg: MessageSummary) -> None:
     table.add_row(msg.uid, timestamp_str, msg.sender, subject, snippet)
 
 
-def _get_demo_messages() -> list[MessageSummary]:
-    """Get demo messages for testing."""
-    return [
-        MessageSummary(
-            uid="1001",
-            subject="Welcome to Relay CLI",
-            sender="noreply@relay.com",
-            date="2025-01-10T10:30:00+00:00",
-            snippet="Thank you for installing Relay CLI! This is your first step towards efficient email management...",
-        ),
-        MessageSummary(
-            uid="1002",
-            subject="Weekly Newsletter - Tech Updates",
-            sender="newsletter@techworld.com",
-            date="2025-01-09T08:15:00+00:00",
-            snippet="This week in tech: AI developments, new frameworks, and industry insights that matter to developers...",
-        ),
-        MessageSummary(
-            uid="1003",
-            subject="Meeting Reminder: Project Sync",
-            sender="alice@company.com",
-            date="2025-01-07T16:45:00+00:00",
-            snippet="Hi team, just a reminder about tomorrow's project sync meeting at 10 AM. Please review the agenda...",
-        ),
-        MessageSummary(
-            uid="1004",
-            subject="Your invoice #2025-001",
-            sender="billing@service.com",
-            date="2025-01-06T14:20:00+00:00",
-            snippet="Your monthly invoice is ready. Total amount: $29.99. Payment is due within 30 days...",
-        ),
-    ]
-
-
 # --- Command Functions ---
 
 
@@ -143,18 +110,6 @@ def list_messages(
     demo: Annotated[bool, typer.Option("--demo", help="Show demo data instead of real emails")] = False,
 ):
     """List recent emails from specified account."""
-    # Demo mode - show sample data
-    if demo:
-        sample_messages = _get_demo_messages()
-        table = create_messages_table("Messages (Demo Mode)")
-
-        for msg in sample_messages:
-            _add_message_to_table(table, msg)
-
-        console.print(table)
-        console.print(f"[dim]Showing {len(sample_messages)} demo messages[/dim]")
-        return
-
     manager, client, account = _get_account_manager_and_client(account)
     account_info = manager.get_account(account)
 
@@ -327,6 +282,36 @@ def mark_message_spam(
         client.logout()
 
     console.print(f"[green]✓ Message {uid} marked as spam[/green]")
+
+
+class Status(str, Enum):
+    READ = "read"
+    UNREAD = "unread"
+
+
+@app.command("mark")
+@_handle_common_errors
+def mark_message(
+    status: Annotated[Status, typer.Argument(help="Action to perform: 'read' or 'unread'")],
+    uid: Annotated[str, typer.Argument(help="Message UID to mark")],
+    account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
+):
+    """Mark a message as read or unread."""
+    _, client, account = _get_account_manager_and_client(account)
+
+    with console.status(f"[bold blue]Marking message {uid} as {status.value}...", spinner="dots"):
+        try:
+            if status == Status.READ:
+                client.mark_as_read(uid)
+            else:  # action == "unread"
+                client.mark_as_unread(uid)
+            client.logout()
+        except ValidationError as e:
+            client.logout()
+            console.print(f"[red]Error: {e}[/red]")
+            raise typer.Exit(1)
+
+    console.print(f"[green]✓ Message {uid} marked as {status.value}[/green]")
 
 
 if __name__ == "__main__":
