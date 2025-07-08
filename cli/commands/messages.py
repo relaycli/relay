@@ -19,8 +19,9 @@ console = Console()
 app = typer.Typer(help="Email message commands")
 
 
-@app.command()
-def list(
+@app.command("list")
+@app.command("ls")
+def list_messages(
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
     count: Annotated[int, typer.Option("--count", "-c", help="Number of messages to fetch")] = 20,
     unread_only: Annotated[bool, typer.Option("--unread", "-u", help="Show only unread messages")] = False,
@@ -172,8 +173,9 @@ def list(
         raise typer.Exit(1)
 
 
-@app.command()
-def read(
+@app.command("read")
+@app.command("cat")
+def read_message(
     uid: Annotated[str, typer.Argument(help="Message UID to read")],
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
 ):
@@ -253,8 +255,10 @@ def read(
         raise typer.Exit(1)
 
 
-@app.command()
-def search(
+@app.command("search")
+@app.command("find")
+@app.command("grep")
+def search_messages(
     query: Annotated[str, typer.Argument(help="Search query")],
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
     count: Annotated[int, typer.Option("--count", "-c", help="Number of messages to search")] = 100,

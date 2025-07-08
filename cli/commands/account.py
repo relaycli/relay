@@ -25,8 +25,8 @@ console = Console()
 app = typer.Typer(help="Account management commands")
 
 
-@app.command()
-def add():
+@app.command("add")
+def connect_account() -> None:
     """Add a new IMAP account with interactive setup."""
     console.print("[bold blue]Setting up new IMAP account[/bold blue]")
 
@@ -121,8 +121,9 @@ def add():
         raise typer.Exit(1)
 
 
-@app.command()
-def list():  # noqa: A001
+@app.command("list")
+@app.command("ls")
+def list_accounts() -> None:
     """List all configured accounts."""
     try:
         manager = AccountManager()
@@ -151,8 +152,9 @@ def list():  # noqa: A001
         raise typer.Exit(1)
 
 
-@app.command()
-def remove(name: str):
+@app.command("remove")
+@app.command("rm")
+def remove_account_connection(name: str) -> None:
     """Remove an account."""
     try:
         manager = AccountManager()
@@ -174,8 +176,8 @@ def remove(name: str):
         raise typer.Exit(1)
 
 
-@app.command()
-def test(name: str):
+@app.command("test")
+def test_account_connection(name: str) -> None:
     """Test connection to an account."""
     try:
         manager = AccountManager()
