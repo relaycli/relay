@@ -282,36 +282,85 @@ class IMAPClient:
     def mark_as_read(self, uid: str) -> None:
         """Mark email as read"""
         self._select("INBOX", readonly=False)
-        self._imap.uid("STORE", uid, "+FLAGS", "\\Seen")
+        status_, _ = self._imap.uid("STORE", uid, "+FLAGS", "\\Seen")
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to mark message {uid} as read: {status_}")
         self._imap.close()
 
     def mark_as_unread(self, uid: str) -> None:
         """Mark email as unread"""
         self._select("INBOX", readonly=False)
-        self._imap.uid("STORE", uid, "-FLAGS", "\\Seen")
+        status_, _ = self._imap.uid("STORE", uid, "-FLAGS", "\\Seen")
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to mark message {uid} as unread: {status_}")
         self._imap.close()
 
     def move_to_trash(self, uid: str) -> None:
         """Move email to trash folder"""
         self._select("INBOX", readonly=False)
-        self._imap.uid("COPY", uid, self.config["folders"]["trash"])
-        self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
-        self._imap.expunge()
+
+        # First copy to trash folder
+        status_, _ = self._imap.uid("COPY", uid, self.config["folders"]["trash"])
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to copy message {uid} to trash: {status_}")
+
+        # Then mark as deleted
+        status_, _ = self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to mark message {uid} as deleted: {status_}")
+
+        # Finally expunge
+        status_, _ = self._imap.expunge()
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to expunge message {uid}: {status_}")
+
         self._imap.close()
 
     def delete_email(self, uid: str) -> None:
-        """Move email to trash folder"""
+        """Delete email permanently"""
         self._select("INBOX", readonly=False)
-        self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
-        self._imap.expunge()
+
+        # Mark as deleted
+        status_, _ = self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to mark message {uid} as deleted: {status_}")
+
+        # Expunge to permanently delete
+        status_, _ = self._imap.expunge()
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to expunge message {uid}: {status_}")
+
         self._imap.close()
 
     def mark_as_spam(self, uid: str) -> None:
         """Move email to spam folder"""
         self._select("INBOX", readonly=False)
-        self._imap.uid("COPY", uid, self.config["folders"]["spam"])
-        self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
-        self._imap.expunge()
+
+        # First copy to spam folder
+        status_, _ = self._imap.uid("COPY", uid, self.config["folders"]["spam"])
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to copy message {uid} to spam folder: {status_}")
+
+        # Then mark as deleted from inbox
+        status_, _ = self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to mark message {uid} as deleted: {status_}")
+
+        # Finally expunge from inbox
+        status_, _ = self._imap.expunge()
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(f"Failed to expunge message {uid}: {status_}")
+
         self._imap.close()
 
 
