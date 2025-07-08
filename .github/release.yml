@@ -1,0 +1,19 @@
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+  categories:
+    - title: Breaking Changes 🛠
+      labels: ["type: breaking change"]
+    - title: New Features ✨
+      labels: ["type: feat"]
+    - title: Bug Fixes 🐛
+      labels: ["type: fix"]
+    - title: Dependencies
+      labels: ["dependencies"]
+    - title: Documentation 📖
+      labels: ["service: docs"]
+    - title: Improvements
+      labels: ["type: improvement"]
+    - title: Other changes
+      labels: ["*"]

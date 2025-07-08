@@ -1,5 +1,5 @@
-# Invoxflow
-Backend API for a fast inbox processing flow
+# Relay
+SDK and CLI for email management
 
 ## What you get
 - Production ready backend with user authentication
