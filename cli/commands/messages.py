@@ -107,7 +107,6 @@ def list_messages(
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
     limit: Annotated[int, typer.Option("--limit", "-l", help="Number of messages to fetch")] = 20,
     unread_only: Annotated[bool, typer.Option("--unread", "-u", help="Show only unread messages")] = False,
-    demo: Annotated[bool, typer.Option("--demo", help="Show demo data instead of real emails")] = False,
 ):
     """List recent emails from specified account."""
     manager, client, account = _get_account_manager_and_client(account)
