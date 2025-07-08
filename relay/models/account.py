@@ -60,19 +60,7 @@ class AccountCreate(AccountBase):
         # Auto-detect provider from email if not set
         if "provider" not in data or data["provider"] == "custom":
             email = data.get("email", "")
-            if "@" in email:
-                email_domain = email.rpartition("@")[-1].lower()
-                match email_domain:
-                    case "gmail.com" | "googlemail.com":
-                        data["provider"] = EmailProvider.GMAIL
-                    case "outlook.com" | "hotmail.com" | "live.com":
-                        data["provider"] = EmailProvider.OUTLOOK
-                    case "yahoo.com" | "yahoo.co.uk" | "yahoo.ca":
-                        data["provider"] = EmailProvider.YAHOO
-                    case "icloud.com" | "me.com" | "mac.com":
-                        data["provider"] = EmailProvider.ICLOUD
-                    case _:
-                        data["provider"] = EmailProvider.CUSTOM
+            data["provider"] = self._detect_provider_from_email(email)
 
         # Auto-fill server settings based on provider
         provider = data.get("provider", EmailProvider.CUSTOM)
@@ -85,6 +73,13 @@ class AccountCreate(AccountBase):
             data["imap_port"] = PROVIDER_CONFIGS[provider]["imap_port"]
 
         super().__init__(**data)
+
+    def _detect_provider_from_email(self, email: str) -> EmailProvider:
+        """Detect provider from email domain using centralized configuration."""
+        # Use the centralized detection logic from IMAPClient
+        from ..providers.imap import IMAPClient
+
+        return IMAPClient._detect_provider("", email)
 
 
 class Account(AccountBase):

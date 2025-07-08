@@ -34,53 +34,54 @@ def list(
                 uid="1001",
                 subject="Welcome to Relay CLI",
                 sender="noreply@relay.com",
-                date="Mon, 10 Jan 2025 10:30:00",
+                date="2025-01-10T10:30:00+00:00",
                 snippet="Thank you for installing Relay CLI! This is your first step towards efficient email management...",
             ),
             MessageSummary(
                 uid="1002",
                 subject="Weekly Newsletter - Tech Updates",
                 sender="newsletter@techworld.com",
-                date="Sun, 09 Jan 2025 08:15:00",
+                date="2025-01-09T08:15:00+00:00",
                 snippet="This week in tech: AI developments, new frameworks, and industry insights that matter to developers...",
             ),
             MessageSummary(
                 uid="1003",
                 subject="Meeting Reminder: Project Sync",
                 sender="alice@company.com",
-                date="Fri, 07 Jan 2025 16:45:00",
+                date="2025-01-07T16:45:00+00:00",
                 snippet="Hi team, just a reminder about tomorrow's project sync meeting at 10 AM. Please review the agenda...",
             ),
             MessageSummary(
                 uid="1004",
                 subject="Your invoice #2025-001",
                 sender="billing@service.com",
-                date="Thu, 06 Jan 2025 14:20:00",
+                date="2025-01-06T14:20:00+00:00",
                 snippet="Your monthly invoice is ready. Total amount: $29.99. Payment is due within 30 days...",
             ),
         ]
 
-        # Create table
+        # Create table - let high priority columns auto-size, limit truncatable ones
         table = Table(title="Messages (Demo Mode)")
-        table.add_column("Date", style="cyan", width=20)
-        table.add_column("From", style="green", width=25)
-        table.add_column("Subject", style="bold", width=40)
-        table.add_column("Snippet", style="dim", width=50)
+        table.add_column("UID", style="cyan", no_wrap=True)
+        table.add_column("Timestamp", style="blue", no_wrap=True)
+        table.add_column("From", style="green", no_wrap=True)
+        table.add_column("Subject", style="bold", max_width=30)
+        table.add_column("Snippet", style="dim", max_width=25)
 
         for msg in sample_messages:
-            # Format date (extract date part if it's a full date string)
-            date_str = msg.date
-            if len(date_str) > 20:
-                parts = date_str.split()
-                if len(parts) >= 4:
-                    date_str = " ".join(parts[:4])
+            # Format timestamp to show date and time without timezone
+            timestamp_str = msg.date
+            if "T" in timestamp_str:
+                # Convert ISO format to readable format: 2025-01-10T10:30:00+00:00 -> 2025-01-10 10:30:00
+                date_part, time_part = timestamp_str.split("T")
+                time_without_tz = time_part.split("+")[0].split("-")[0]  # Remove timezone
+                timestamp_str = f"{date_part} {time_without_tz}"
 
-            # Truncate fields for display
-            sender = msg.sender[:23] + "..." if len(msg.sender) > 25 else msg.sender
-            subject = msg.subject[:37] + "..." if len(msg.subject) > 40 else msg.subject
-            snippet = msg.snippet[:47] + "..." if len(msg.snippet) > 50 else msg.snippet
+            # Truncate only subject and snippet - let UID, timestamp, from display fully
+            subject = msg.subject[:27] + "..." if len(msg.subject) > 30 else msg.subject
+            snippet = msg.snippet[:22] + "..." if len(msg.snippet) > 25 else msg.snippet
 
-            table.add_row(date_str, sender, subject, snippet)
+            table.add_row(msg.uid, timestamp_str, msg.sender, subject, snippet)
 
         console.print(table)
         console.print(f"[dim]Showing {len(sample_messages)} demo messages[/dim]")
@@ -128,28 +129,28 @@ def list(
         # Convert to summary objects
         message_summaries = [MessageSummary.from_message_data(msg) for msg in messages]
 
-        # Create table
+        # Create table - let high priority columns auto-size, limit truncatable ones
         table = Table(title=f"Messages from {account_info.email}")
-        table.add_column("Date", style="cyan", width=20)
-        table.add_column("From", style="green", width=25)
-        table.add_column("Subject", style="bold", width=40)
-        table.add_column("Snippet", style="dim", width=50)
+        table.add_column("UID", style="cyan", no_wrap=True)
+        table.add_column("Timestamp", style="blue", no_wrap=True)
+        table.add_column("From", style="green", no_wrap=True)
+        table.add_column("Subject", style="bold", max_width=30)
+        table.add_column("Snippet", style="dim", max_width=25)
 
         for msg in message_summaries:
-            # Format date (extract date part if it's a full date string)
-            date_str = msg.date
-            if len(date_str) > 20:
-                # Try to extract just the date part from longer date strings
-                parts = date_str.split()
-                if len(parts) >= 4:
-                    date_str = " ".join(parts[:4])  # Take first 4 parts (day, date, month, year)
+            # Format timestamp to show date and time without timezone
+            timestamp_str = msg.date
+            if "T" in timestamp_str:
+                # Convert ISO format to readable format: 2025-01-10T10:30:00+00:00 -> 2025-01-10 10:30:00
+                date_part, time_part = timestamp_str.split("T")
+                time_without_tz = time_part.split("+")[0].split("-")[0]  # Remove timezone
+                timestamp_str = f"{date_part} {time_without_tz}"
 
-            # Truncate fields for display
-            sender = msg.sender[:23] + "..." if len(msg.sender) > 25 else msg.sender
-            subject = msg.subject[:37] + "..." if len(msg.subject) > 40 else msg.subject
-            snippet = msg.snippet[:47] + "..." if len(msg.snippet) > 50 else msg.snippet
+            # Truncate only subject and snippet - let UID, timestamp, from display fully
+            subject = msg.subject[:27] + "..." if len(msg.subject) > 30 else msg.subject
+            snippet = msg.snippet[:22] + "..." if len(msg.snippet) > 25 else msg.snippet
 
-            table.add_row(date_str, sender, subject, snippet)
+            table.add_row(msg.uid, timestamp_str, msg.sender, subject, snippet)
 
         console.print(table)
         console.print(

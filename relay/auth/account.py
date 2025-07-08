@@ -45,7 +45,11 @@ class AccountManager:
 
         # Test connection before saving
         self.test_connection(
-            account_data.email, account_data.password, account_data.imap_server, account_data.imap_port
+            account_data.email,
+            account_data.password,
+            account_data.imap_server,
+            account_data.imap_port,
+            account_data.provider,
         )
 
         # Add to storage
@@ -101,9 +105,11 @@ class AccountManager:
         account = self.storage.get_account(name)
         password = self.storage.get_account_password(name)
 
-        return self.test_connection(account.email, password, account.imap_server, account.imap_port)
+        return self.test_connection(account.email, password, account.imap_server, account.imap_port, account.provider)
 
-    def test_connection(self, email: str, password: str, imap_server: str, imap_port: int) -> bool:
+    def test_connection(
+        self, email: str, password: str, imap_server: str, imap_port: int, provider: str | None = None
+    ) -> bool:
         """Test IMAP connection with given credentials.
 
         Args:
@@ -111,6 +117,7 @@ class AccountManager:
             password: Password
             imap_server: IMAP server address
             imap_port: IMAP port
+            provider: Email provider
 
         Returns:
             True if connection successful
@@ -119,7 +126,9 @@ class AccountManager:
             ServerConnectionError: If cannot connect to IMAP server
             AuthenticationError: If IMAP credentials are invalid
         """
-        client = IMAPClient(imap_server=imap_server, email_address=email, password=password, imap_port=imap_port)
+        client = IMAPClient(
+            imap_server=imap_server, email_address=email, password=password, imap_port=imap_port, provider=provider
+        )
         client.logout()
         return True
 
@@ -150,5 +159,9 @@ class AccountManager:
         password = self.storage.get_account_password(name)
 
         return IMAPClient(
-            imap_server=account.imap_server, email_address=account.email, password=password, imap_port=account.imap_port
+            imap_server=account.imap_server,
+            email_address=account.email,
+            password=password,
+            imap_port=account.imap_port,
+            provider=account.provider,
         )

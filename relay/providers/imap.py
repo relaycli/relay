@@ -8,6 +8,7 @@ import re
 from email import message_from_bytes
 from email.message import EmailMessage
 from email.parser import Parser
+from email.utils import parsedate_to_datetime
 from functools import reduce
 from imaplib import IMAP4, IMAP4_SSL
 from socket import gaierror
@@ -17,13 +18,16 @@ from bs4 import BeautifulSoup
 from html2text import html2text
 
 from ..exceptions import AuthenticationError, ServerConnectionError, ValidationError
+from ..models.account import EmailProvider
 
 EMAIL_PATTERN = r"<[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}>"
 
 __all__ = ["IMAPClient"]
 
 EMAIL_PROVIDERS = {
-    "gmail": {
+    EmailProvider.GMAIL: {
+        "email_domains": ["gmail.com", "googlemail.com"],
+        "server_domains": ["gmail.com"],
         "folders": {
             "inbox": "INBOX",
             "trash": '"[Gmail]/Trash"',
@@ -32,7 +36,9 @@ EMAIL_PROVIDERS = {
             "drafts": '"[Gmail]/Drafts"',
         },
     },
-    "outlook": {
+    EmailProvider.OUTLOOK: {
+        "email_domains": ["outlook.com", "hotmail.com", "hotmail.fr", "live.com"],
+        "server_domains": ["outlook.com", "office365.com"],
         "folders": {
             "inbox": "INBOX",
             "trash": "Deleted Items",
@@ -41,10 +47,14 @@ EMAIL_PROVIDERS = {
             "drafts": "Drafts",
         },
     },
-    "yahoo": {
+    EmailProvider.YAHOO: {
+        "email_domains": ["yahoo.com", "yahoo.co.uk", "yahoo.ca"],
+        "server_domains": ["yahoo.com"],
         "folders": {"inbox": "INBOX", "trash": "Trash", "spam": "Bulk Mail", "sent": "Sent", "drafts": "Draft"},
     },
-    "icloud": {
+    EmailProvider.ICLOUD: {
+        "email_domains": ["icloud.com", "me.com", "mac.com"],
+        "server_domains": ["icloud.com", "me.com"],
         "folders": {
             "inbox": "INBOX",
             "trash": "Deleted Messages",
@@ -67,20 +77,17 @@ class IMAPClient:
         email_address: str,
         password: str,
         imap_port: int = 993,
-        provider: str | None = None,
+        provider: str | EmailProvider | None = None,
         **kwargs,
     ) -> None:
+        # Convert string provider to EmailProvider enum
+        if isinstance(provider, str):
+            provider = EmailProvider(provider)
+
+        # Auto-detect provider if not provided
         if not provider:
-            if imap_server.endswith("gmail.com"):
-                provider = "gmail"
-            elif imap_server.endswith(("outlook.com", "office365.com")):
-                provider = "outlook"
-            elif imap_server.endswith("yahoo.com"):
-                provider = "yahoo"
-            elif imap_server.endswith(("icloud.com", "me.com")):
-                provider = "icloud"
-            else:
-                raise ValueError("Unknown email provider")
+            provider = self._detect_provider(imap_server, email_address)
+
         # IMAP
         try:
             self._imap = IMAP4_SSL(imap_server, imap_port, **kwargs)
@@ -94,7 +101,52 @@ class IMAPClient:
         except IMAP4.error:
             raise AuthenticationError("Invalid IMAP credentials")
 
-        self.config = EMAIL_PROVIDERS[provider]
+        self.provider = provider
+        self.config = EMAIL_PROVIDERS.get(provider, {})
+        if not self.config:
+            # For custom providers, create minimal config
+            self.config = {
+                "folders": {
+                    "inbox": "INBOX",
+                    "trash": "Trash",
+                    "spam": "Spam",
+                    "sent": "Sent",
+                    "drafts": "Drafts",
+                },
+            }
+
+    @staticmethod
+    def _detect_provider(imap_server: str, email_address: str) -> EmailProvider:
+        """Detect email provider from server address or email domain."""
+        # First try to detect by server address
+        for provider, config in EMAIL_PROVIDERS.items():
+            if any(imap_server.endswith(domain) for domain in config["server_domains"]):
+                return provider
+
+        # Fall back to email domain detection
+        if "@" in email_address:
+            email_domain = email_address.rpartition("@")[-1].lower()
+            for provider, config in EMAIL_PROVIDERS.items():
+                if email_domain in config["email_domains"]:
+                    return provider
+
+        # Default to custom if no match found
+        return EmailProvider.CUSTOM
+
+    @staticmethod
+    def _parse_date_to_iso(date_str: str) -> str:
+        """Parse MIME date format to ISO timestamp."""
+        if not date_str:
+            return ""
+
+        try:
+            # Parse the MIME date using email.utils
+            dt = parsedate_to_datetime(date_str)
+            # Convert to ISO format
+            return dt.isoformat()
+        except (ValueError, TypeError):
+            # If parsing fails, return original string
+            return date_str
 
     def logout(self) -> None:
         self._imap.logout()
@@ -152,6 +204,7 @@ class IMAPClient:
         return {
             "uid": uid,
             "thread_id": resolve_thread_id(message),
+            "date": self._parse_date_to_iso(message.get("Date", "")),
             "subject": message.get(
                 "Thread-Topic",
                 message.get("Subject", "")
@@ -215,7 +268,7 @@ class IMAPClient:
                     .replace("FWD:", "")
                     .strip(),
                 ),
-                "date": message.get("Date", ""),
+                "date": self._parse_date_to_iso(message.get("Date", "")),
                 "headers": {
                     "Message-ID" if k.lower() == "message-id" else k: v.strip()
                     for k, v in message.items()
