@@ -1,7 +1,7 @@
-ENGINE_DIR = ./relay
+ENGINE_DIR = .
 CLI_DIR = ./cli
 DOCS_DIR = ./docs
-PYPROJECT_CONFIG_FILE = ./pyproject.toml
+PYPROJECT_CONFIG_FILE = ${ENGINE_DIR}/pyproject.toml
 PYTHON_REQ_FILE = /tmp/requirements.txt
 REPO_OWNER ?= relaycli
 REPO_NAME ?= relay
@@ -20,7 +20,7 @@ install: ${ENGINE_DIR} ${PYPROJECT_CONFIG_FILE} ## Install the core library
 	uv pip install --system -e ${ENGINE_DIR}
 
 install-quality: ${ENGINE_DIR} ${PYPROJECT_CONFIG_FILE} ## Install with quality dependencies
-	uv pip install --system -e '${ENGINE_DIR}/.[quality]'
+	uv pip install --system -e '${ENGINE_DIR}[quality]'
 
 lint-check: ${PYPROJECT_CONFIG_FILE} ## Check code formatting and linting
 	ruff format --check . --config ${PYPROJECT_CONFIG_FILE}

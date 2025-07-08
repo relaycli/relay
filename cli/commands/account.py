@@ -5,6 +5,7 @@
 
 """Account management CLI commands."""
 
+import questionary
 import typer
 from rich.console import Console
 from rich.prompt import Prompt
@@ -50,7 +51,23 @@ def add():
             provider = EmailProvider.ICLOUD
         case _:
             console.print(f"[yellow]Unknown provider for domain: {email_domain}[/yellow]")
-            provider_choice = typer.prompt("Provider", default=EmailProvider.CUSTOM, type=EmailProvider)
+            provider_choices = [
+                questionary.Choice("Gmail", EmailProvider.GMAIL),
+                questionary.Choice("Outlook (Hotmail/Live)", EmailProvider.OUTLOOK),
+                questionary.Choice("Yahoo Mail", EmailProvider.YAHOO),
+                questionary.Choice("iCloud Mail", EmailProvider.ICLOUD),
+                questionary.Choice("Custom IMAP Server", EmailProvider.CUSTOM),
+            ]
+            provider_choice = questionary.select(
+                "Select your email provider:",
+                choices=provider_choices,
+                default=EmailProvider.CUSTOM,
+            ).ask()
+
+            if provider_choice is None:
+                console.print("[yellow]Cancelled[/yellow]")
+                raise typer.Exit(1)
+
             provider = provider_choice
 
     # Get server settings
