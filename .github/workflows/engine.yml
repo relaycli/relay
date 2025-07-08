@@ -36,25 +36,10 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
       - name: Install the engine
-        run: make install-python
+        run: make install
       - name: Check that we can import the engine
         run: |
           python -c "import relay; print(relay.__version__)"
-
-  cli:
-    needs: [engine]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          architecture: x64
-      - uses: astral-sh/setup-uv@v6
-        with:
-          version: ${{ env.UV_VERSION }}
-      - name: Install dependencies
-        run: make install-cli
       - name: Run the CLI
         run: relay --help
 
