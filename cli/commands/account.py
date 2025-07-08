@@ -3,7 +3,7 @@
 # This program is licensed under the Apache License 2.0.
 # See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
 
-"""Authentication CLI commands."""
+"""Account management CLI commands."""
 
 import typer
 from rich.console import Console
@@ -21,7 +21,7 @@ from relay.exceptions import (
 from relay.models.account import PROVIDER_CONFIGS, AccountCreate, EmailProvider
 
 console = Console()
-app = typer.Typer(help="Authentication commands")
+app = typer.Typer(help="Account management commands")
 
 
 @app.command()
@@ -78,9 +78,9 @@ def add():
             name=name, email=email, provider=provider, imap_server=imap_server, imap_port=imap_port, password=password
         )
 
-        console.print("[yellow]Testing connection...[/yellow]")
-        manager = AccountManager()
-        account = manager.add_account(account_data)
+        with console.status("[bold green]Testing connection...", spinner="dots"):
+            manager = AccountManager()
+            account = manager.add_account(account_data)
 
         console.print(f"[green]✓ Account '{account.name}' added successfully![/green]")
         console.print(f"[dim]Email: {account.email}[/dim]")
@@ -162,9 +162,8 @@ def test(name: str):
     """Test connection to an account."""
     try:
         manager = AccountManager()
-        console.print(f"[yellow]Testing connection to '{name}'...[/yellow]")
-
-        manager.test_account(name)
+        with console.status(f"[bold green]Testing connection to '{name}'...", spinner="dots"):
+            manager.test_account(name)
         console.print(f"[green]✓ Connection to '{name}' successful[/green]")
 
     except AccountNotFoundError as e:

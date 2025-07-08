@@ -10,17 +10,19 @@ from rich.console import Console
 
 import relay
 
-from .commands.auth import app as auth_app
+from .commands.account import app as account_app
+from .commands.messages import app as messages_app
 
 console = Console()
 app = typer.Typer(
     help="Relay CLI - Manage your emails efficiently.",
     no_args_is_help=True,
-    add_completion=False,
+    add_completion=True,
 )
 
-# Add auth subcommands
-app.add_typer(auth_app, name="auth")
+# Add subcommands
+app.add_typer(account_app, name="account")
+app.add_typer(messages_app, name="messages")
 
 
 @app.command()
