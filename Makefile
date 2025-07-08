@@ -34,7 +34,7 @@ precommit: ${PYPROJECT_CONFIG_FILE} .pre-commit-config.yaml ## Run pre-commit ho
 	pre-commit run --all-files
 
 typing-check: ${PYPROJECT_CONFIG_FILE} ## Check type annotations
-	ty check . --project ${ENGINE_DIR}
+	uvx ty check . --project ${ENGINE_DIR}
 
 deps-check: .github/verify_deps_sync.py ## Check dependency synchronization
 	uv run .github/verify_deps_sync.py
