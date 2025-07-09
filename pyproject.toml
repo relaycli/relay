@@ -74,7 +74,7 @@ logo = "https://zugjkckdxhiamdlkxfmv.supabase.co/storage/v1/object/public/assets
 module-name = "relay"
 module-root = ""
 
-[tool.uv.index]
+[[tool.uv.index]]
 name = "testpypi"
 url = "https://test.pypi.org/simple/"
 publish-url = "https://test.pypi.org/legacy/"
