@@ -51,7 +51,15 @@ EMAIL_PROVIDERS = {
 
 
 def resolve_provider(server: str, email_address: str) -> EmailProvider:
-    """Detect email provider from server address or email domain."""
+    """Detect email provider from server address or email domain.
+
+    Args:
+        server: Server address
+        email_address: Email address
+
+    Returns:
+        Email provider
+    """
     # First try to detect by server address
     for provider, config in EMAIL_PROVIDERS.items():
         if any(server.endswith(domain) for domain in config["server_domains"]):

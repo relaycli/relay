@@ -35,7 +35,14 @@ class MessageSummary(BaseModel):
 
     @classmethod
     def from_message_data(cls, message_data: dict[str, Any]) -> "MessageSummary":
-        """Create MessageSummary from raw IMAP message data."""
+        """Create MessageSummary from raw IMAP message data.
+
+        Args:
+            message_data: Dictionary of email message data
+
+        Returns:
+            MessageSummary
+        """
         headers = message_data.get("headers", {})
         body = message_data.get("body", {})
 

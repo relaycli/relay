@@ -43,6 +43,8 @@ class AccountStorage:
         Returns:
             Dictionary of account data
 
+        Raises:
+            StorageError: If failed to load accounts data
         """
         if not self.accounts_file.exists():
             return {}
@@ -67,6 +69,8 @@ class AccountStorage:
         Args:
             data: Dictionary of account data
 
+        Raises:
+            StorageError: If failed to save accounts data
         """
         try:
             self._ensure_config_dir()
@@ -97,6 +101,9 @@ class AccountStorage:
 
         Returns:
             Created account
+
+        Raises:
+            AccountExistsError: If account name already exists
         """
         accounts = self._load_accounts_data()
 
@@ -195,10 +202,6 @@ class AccountStorage:
 
         Returns:
             Decrypted password
-
-        Raises:
-            AccountNotFoundError: If account doesn't exist
-
         """
         account = self.get_account(name)
         return self.credential_manager.decrypt_password(account.encrypted_password)

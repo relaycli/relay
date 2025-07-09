@@ -36,7 +36,6 @@ class AccountBase(BaseModel):
     @field_validator("name")
     @classmethod
     def validate_name(cls, v: str) -> str:
-        """Validate account name contains only safe characters."""
         if not v.replace("-", "").replace("_", "").replace(".", "").isalnum():
             raise ValueError("Account name can only contain letters, numbers, hyphens, underscores, and dots")
         return v

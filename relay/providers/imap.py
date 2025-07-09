@@ -71,6 +71,21 @@ SORTING_HEADERS = {"List-Unsubscribe", "List-Id", "Precedence", "Auto-Submitted"
 
 
 class IMAPClient:
+    """IMAP client for managing emails.
+
+    Args:
+        imap_server: IMAP server address
+        email_address: Email address
+        password: Password
+        imap_port: IMAP port
+        provider: Email provider
+        kwargs: Additional IMAP parameters
+
+    Raises:
+        ServerConnectionError: If IMAP server is not found
+        AuthenticationError: If IMAP credentials are invalid
+    """
+
     def __init__(
         self,
         imap_server: str,
@@ -80,6 +95,7 @@ class IMAPClient:
         provider: str | EmailProvider | None = None,
         **kwargs,
     ) -> None:
+        """Initialize the IMAP client."""
         # Convert string provider to EmailProvider enum
         if isinstance(provider, str):
             provider = EmailProvider(provider)
@@ -115,6 +131,7 @@ class IMAPClient:
         )
 
     def logout(self) -> None:
+        """Logout from the IMAP server."""
         self._imap.logout()
 
     def _select(self, folder: str = "INBOX", readonly: bool = True) -> None:
@@ -126,6 +143,14 @@ class IMAPClient:
             raise ValidationError(f"Invalid folder: {folder}")
 
     def list_flags(self, **kwargs) -> list[str]:
+        """List flags for the selected folder.
+
+        Args:
+            kwargs: Additional IMAP parameters
+
+        Returns:
+            List of flags
+        """
         self._select(readonly=False, **kwargs)
         _, flags = self._imap.response("FLAGS")
         self._imap.close()
@@ -161,6 +186,15 @@ class IMAPClient:
         return cast(list[list[bytes]], self._uid("FETCH", uid, msg_parts))
 
     def list_email_uids(self, unseen_only: bool = False, **kwargs) -> list[str]:
+        """List email UIDs.
+
+        Args:
+            unseen_only: Whether to only list unseen emails
+            kwargs: Additional IMAP parameters
+
+        Returns:
+            List of email UIDs
+        """
         self._select(readonly=True, **kwargs)
         res = self._search("UNSEEN" if unseen_only else "ALL")
         self._imap.close()
@@ -169,6 +203,17 @@ class IMAPClient:
     def fetch_message(
         self, uid: str, headers_set: set | None = None, include_quoted_body: bool = False, **kwargs
     ) -> dict[str, Any]:
+        """Fetch a single email message.
+
+        Args:
+            uid: Email UID
+            headers_set: Set of headers to include
+            include_quoted_body: Whether to include quoted body
+            kwargs: Additional IMAP parameters
+
+        Returns:
+            Dictionary of email message
+        """
         self._select(readonly=True, **kwargs)
         content = self._fetch(uid, "(RFC822)")
         self._imap.close()
@@ -195,6 +240,16 @@ class IMAPClient:
         }
 
     def fetch_headers(self, uids: list[str], headers_set: set, **kwargs) -> list[dict[str, Any]]:
+        """Fetch headers for multiple email messages.
+
+        Args:
+            uids: List of email UIDs
+            headers_set: Set of headers to include
+            kwargs: Additional IMAP parameters
+
+        Returns:
+            List of dictionaries of email headers
+        """
         self._select(readonly=True, **kwargs)
         if len(uids) == 0:
             return []
@@ -215,6 +270,17 @@ class IMAPClient:
         include_quoted_body: bool = False,
         **kwargs,
     ) -> list[dict[str, Any]]:
+        """Fetch multiple email messages.
+
+        Args:
+            uids: List of email UIDs
+            headers_set: Set of headers to include
+            include_quoted_body: Whether to include quoted body
+            kwargs: Additional IMAP parameters
+
+        Returns:
+            List of dictionaries of email messages
+        """
         self._select(readonly=True, **kwargs)
         if len(uids) == 0:
             return []
@@ -247,19 +313,31 @@ class IMAPClient:
         ]
 
     def mark_as_read(self, uid: str) -> None:
-        """Mark email as read"""
+        """Mark email as read.
+
+        Args:
+            uid: Email UID
+        """
         self._select("INBOX", readonly=False)
         self._flags(uid, "+", "\\Seen")
         self._imap.close()
 
     def mark_as_unread(self, uid: str) -> None:
-        """Mark email as unread"""
+        """Mark email as unread.
+
+        Args:
+            uid: Email UID
+        """
         self._select("INBOX", readonly=False)
         self._flags(uid, "-", "\\Seen")
         self._imap.close()
 
     def move_to_trash(self, uid: str) -> None:
-        """Move email to trash folder"""
+        """Move email to trash folder.
+
+        Args:
+            uid: Email UID
+        """
         self._select("INBOX", readonly=False)
 
         # First copy to trash folder
@@ -277,7 +355,11 @@ class IMAPClient:
         self._imap.close()
 
     def delete_email(self, uid: str) -> None:
-        """Delete email permanently"""
+        """Delete email permanently.
+
+        Args:
+            uid: Email UID
+        """
         self._select("INBOX", readonly=False)
 
         # Mark as deleted
@@ -291,7 +373,11 @@ class IMAPClient:
         self._imap.close()
 
     def mark_as_spam(self, uid: str) -> None:
-        """Move email to spam folder"""
+        """Move email to spam folder.
+
+        Args:
+            uid: Email UID
+        """
         self._select("INBOX", readonly=False)
 
         # First copy to spam folder
@@ -310,7 +396,14 @@ class IMAPClient:
 
 
 def resolve_thread_id(email_message: EmailMessage | dict[str, str]) -> str | None:
-    """Resolve thread ID from email headers"""
+    """Resolve thread ID from email headers.
+
+    Args:
+        email_message: Email message
+
+    Returns:
+        Thread ID
+    """
     # Clean resolution
     if isinstance(email_message.get("References"), str) and len(email_message.get("References", "").split()) > 0:
         return email_message.get("References", "").split()[0].strip()
@@ -321,7 +414,15 @@ def resolve_thread_id(email_message: EmailMessage | dict[str, str]) -> str | Non
 
 
 def parse_email_parts(email_message: EmailMessage, include_quoted_body: bool = False) -> dict[str, Any]:
-    """Extract plain text body from email"""
+    """Extract plain text body from email.
+
+    Args:
+        email_message: Email message
+        include_quoted_body: Whether to include quoted body
+
+    Returns:
+        Dictionary of email parts
+    """
     body_plain = None
     body_html = None
     attachments = []

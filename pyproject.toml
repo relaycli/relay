@@ -153,6 +153,8 @@ ignore = [
     "D203",  # incorrect-blank-line-before-class
     "D213",  # multi-line-summary-second-line
     "D413",  # Missing blank line after last section
+    "D100",  # Missing docstring in public module
+    "DOC502",  # Raised exception is not explicitly raised (not working with custom exceptions)
 ]
 exclude = [".git"]
 
