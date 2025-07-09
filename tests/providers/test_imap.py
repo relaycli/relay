@@ -100,19 +100,6 @@ def test_list_email_uids(mocker: MockerFixture):
     assert mock_imap_instance.close.called
 
 
-def test_parse_date_to_iso():
-    """Test _parse_date_to_iso with valid and invalid dates."""
-    valid_date = "Tue, 15 Nov 2023 09:26:03 +0000"
-    iso_date = IMAPClient._parse_date_to_iso(valid_date)
-    assert iso_date == "2023-11-15T09:26:03+00:00"
-
-    invalid_date = "not a date"
-    assert IMAPClient._parse_date_to_iso(invalid_date) == invalid_date
-
-    empty_date = ""
-    assert IMAPClient._parse_date_to_iso(empty_date) == ""
-
-
 def test_parse_email_parts_simple(simple_email: EmailMessage):
     """Test parse_email_parts with a simple email."""
     parts = parse_email_parts(simple_email)

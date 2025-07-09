@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 from smtplib import SMTP_SSL
 
-from fastapi import HTTPException, status
+from ._utils import resolve_provider
 
 __all__ = ["SMTPClient"]
 
@@ -24,16 +24,7 @@ class SMTPClient:
         **kwargs,
     ) -> None:
         if not provider:
-            if smtp_server.endswith("gmail.com"):
-                provider = "gmail"
-            elif smtp_server.endswith(("outlook.com", "office365.com")):
-                provider = "outlook"
-            elif smtp_server.endswith("yahoo.com"):
-                provider = "yahoo"
-            elif smtp_server.endswith(("icloud.com", "me.com")):
-                provider = "icloud"
-            else:
-                raise ValueError("Unknown email provider")
+            provider = resolve_provider(smtp_server, email_address)
         # SMTP
         self._smtp = SMTP_SSL(smtp_server, smtp_port, **kwargs)
         # Prevent ASCII encoding errors
@@ -41,7 +32,7 @@ class SMTPClient:
         password = password.replace("\xa0", " ")
         status_, _ = self._smtp.login(email_address, password)
         if status_ != 235:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid SMTP credentials")
+            raise ValueError("Invalid SMTP credentials")
         self.sender_name = sender_name
 
     def quit(self) -> None:

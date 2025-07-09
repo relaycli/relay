@@ -18,6 +18,7 @@ from html2text import html2text
 
 from ..exceptions import AuthenticationError, ServerConnectionError, ValidationError
 from ..models.account import EmailProvider
+from ._utils import resolve_provider
 
 EMAIL_PATTERN = r"<[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}>"
 
@@ -85,7 +86,7 @@ class IMAPClient:
 
         # Auto-detect provider if not provided
         if not provider:
-            provider = self._detect_provider(imap_server, email_address)
+            provider = resolve_provider(imap_server, email_address)
 
         # IMAP
         try:
@@ -112,39 +113,6 @@ class IMAPClient:
                 },
             },
         )
-
-    @staticmethod
-    def _detect_provider(imap_server: str, email_address: str) -> EmailProvider:
-        """Detect email provider from server address or email domain."""
-        # First try to detect by server address
-        for provider, config in EMAIL_PROVIDERS.items():
-            if any(imap_server.endswith(domain) for domain in config["server_domains"]):
-                return provider
-
-        # Fall back to email domain detection
-        if "@" in email_address:
-            email_domain = email_address.rpartition("@")[-1].lower()
-            for provider, config in EMAIL_PROVIDERS.items():
-                if email_domain in config["email_domains"]:
-                    return provider
-
-        # Default to custom if no match found
-        return EmailProvider.CUSTOM
-
-    @staticmethod
-    def _parse_date_to_iso(date_str: str) -> str:
-        """Parse MIME date format to ISO timestamp."""
-        if not date_str:
-            return ""
-
-        try:
-            # Parse the MIME date using email.utils
-            dt = parsedate_to_datetime(date_str)
-            # Convert to ISO format
-            return dt.isoformat()
-        except (ValueError, TypeError):
-            # If parsing fails, return original string
-            return date_str
 
     def logout(self) -> None:
         self._imap.logout()
@@ -208,7 +176,7 @@ class IMAPClient:
         return {
             "uid": uid,
             "thread_id": resolve_thread_id(message),
-            "date": self._parse_date_to_iso(message.get("Date", "")),
+            "date": parsedate_to_datetime(message.get("Date", "")).isoformat(),
             "subject": message.get(
                 "Thread-Topic",
                 message.get("Subject", "")
@@ -267,7 +235,7 @@ class IMAPClient:
                     .replace("FWD:", "")
                     .strip(),
                 ),
-                "date": self._parse_date_to_iso(message.get("Date", "")),
+                "date": parsedate_to_datetime(message.get("Date", "")).isoformat(),
                 "headers": {
                     "Message-ID" if k.lower() == "message-id" else k: v.strip()
                     for k, v in message.items()

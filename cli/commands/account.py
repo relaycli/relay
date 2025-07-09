@@ -21,7 +21,7 @@ from relay.exceptions import (
     ValidationError,
 )
 from relay.models.account import PROVIDER_CONFIGS, AccountCreate, EmailProvider
-from relay.providers.imap import IMAPClient
+from relay.providers._utils import resolve_provider
 
 from ..utils import AliasGroup, create_accounts_table
 
@@ -65,12 +65,6 @@ def _handle_account_errors(func: Callable) -> Callable:
 def _get_account_manager() -> AccountManager:
     """Get account manager instance."""
     return AccountManager()
-
-
-def _detect_provider_from_domain(email_domain: str) -> EmailProvider:
-    """Detect provider from email domain using centralized logic."""
-    # Use the centralized detection logic from IMAPClient
-    return IMAPClient._detect_provider("", f"user@{email_domain}")
 
 
 def _get_provider_choice() -> EmailProvider:
@@ -122,7 +116,7 @@ def connect_account(
     final_provider = provider
     if not final_provider:
         email_domain = email.rpartition("@")[-1].lower()
-        final_provider = _detect_provider_from_domain(email_domain)
+        final_provider = resolve_provider("", f"user@{email_domain}")
         if final_provider == EmailProvider.CUSTOM:
             console.print(f"[yellow]Unknown provider for domain: {email_domain}[/yellow]")
             final_provider = _get_provider_choice()
