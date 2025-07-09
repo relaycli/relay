@@ -32,7 +32,7 @@ def main():
     # Retrieve & parse all deps files
     deps_dict = {"uv": [], "ruff": [], "ty": []}
     # Parse precommit
-    with Path(PRECOMMIT_CONFIG).open("r") as f:
+    with Path(PRECOMMIT_CONFIG).open("r", encoding="utf-8") as f:
         precommit = yaml.safe_load(f)
     for repo in precommit["repos"]:
         if repo["repo"] == "https://github.com/astral-sh/uv-pre-commit":

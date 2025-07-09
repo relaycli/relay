@@ -18,7 +18,7 @@ from html2text import html2text
 
 from ..exceptions import AuthenticationError, ServerConnectionError, ValidationError
 from ..models.account import EmailProvider
-from ._utils import resolve_provider
+from .utils import resolve_provider
 
 EMAIL_PATTERN = r"<[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}>"
 
@@ -369,6 +369,6 @@ def clear_quoted_body(plain_text: str) -> str:
 
     # Find the first empty line before the match line
     lines = plain_text.splitlines()
-    empty_line_idx = next((idx for idx, line in enumerate(reversed(lines[:line_index])) if line.strip() == ""), None)
+    empty_line_idx = next((idx for idx, line in enumerate(reversed(lines[:line_index])) if not line.strip()), None)
     line_index = line_index if empty_line_idx is None else line_index - empty_line_idx
     return "\r\n".join(lines[:line_index])

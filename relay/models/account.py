@@ -10,7 +10,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from ..providers._utils import resolve_provider
+from ..providers.utils import resolve_provider
 
 __all__ = ["Account", "AccountCreate", "AccountInfo", "EmailProvider"]
 

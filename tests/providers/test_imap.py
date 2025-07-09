@@ -5,6 +5,7 @@
 
 """Tests for IMAP provider."""
 
+from base64 import b64decode
 from email.message import EmailMessage
 
 import pytest
@@ -121,9 +122,7 @@ def test_parse_email_parts_multipart(multipart_email: EmailMessage):
     assert attachment["filename"] == "test.txt"
     assert attachment["content_type"] == "application/octet-stream"
     # Content is base64 encoded
-    import base64
-
-    assert base64.b64decode(attachment["content"]) == b"attachment content"
+    assert b64decode(attachment["content"]) == b"attachment content"
 
 
 def test_resolve_thread_id():

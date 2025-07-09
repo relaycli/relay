@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 from smtplib import SMTP_SSL
 
-from ._utils import resolve_provider
+from .utils import resolve_provider
 
 __all__ = ["SMTPClient"]
 

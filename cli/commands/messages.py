@@ -5,6 +5,7 @@
 
 """Messages CLI commands."""
 
+import functools
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Annotated, Any, Callable
@@ -63,7 +64,6 @@ def _get_account_manager_and_client(account: str) -> tuple[AccountManager, Any, 
 
 def _handle_common_errors(func: Callable) -> Callable:
     """Decorator to handle common IMAP errors."""
-    import functools
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

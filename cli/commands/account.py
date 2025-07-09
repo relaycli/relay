@@ -5,6 +5,7 @@
 
 """Account management CLI commands."""
 
+import functools
 from typing import Annotated, Callable
 
 import questionary
@@ -21,7 +22,7 @@ from relay.exceptions import (
     ValidationError,
 )
 from relay.models.account import PROVIDER_CONFIGS, AccountCreate, EmailProvider
-from relay.providers._utils import resolve_provider
+from relay.providers.utils import resolve_provider
 
 from ..utils import AliasGroup, create_accounts_table
 
@@ -34,7 +35,6 @@ app = typer.Typer(help="Account management commands", cls=AliasGroup)
 
 def _handle_account_errors(func: Callable) -> Callable:
     """Decorator to handle common account management errors."""
-    import functools
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

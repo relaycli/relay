@@ -128,6 +128,7 @@ select = [
     "NPY",  # numpy
     "FURB",  # refurb
     "RUF",  # ruff specific
+    "PL",  # pylint
 ]
 ignore = [
     "E501",  # line too long, handled by black
@@ -141,6 +142,7 @@ ignore = [
     "ANN003",  # missing type annotations on **kwargs
     "COM812",  # trailing comma missing
     "ISC001",  # implicit string concatenation (handled by format)
+    "PLR",  # Pylint refactor
 ]
 exclude = [".git"]
 
@@ -157,6 +159,7 @@ known-third-party = ["typer", "aioimaplib", "pydantic"]
 ".github/**.py" = ["D", "T201", "ANN"]
 "tests/**.py" = ["D103", "CPY001", "S101", "T201", "ANN001", "ANN201", "ANN202", "ARG001", "RUF029", "RUF030", "DTZ003", "PT003"]
 "cli/**.py" = ["ANN", "BLE001"]
+"relay/**.py" = ["PT028"]
 
 [tool.ruff.format]
 quote-style = "double"
