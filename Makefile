@@ -45,6 +45,16 @@ quality: lint-check typing-check deps-check ## Run all quality checks
 style: lint-format precommit ## Format code and run pre-commit hooks
 
 ########################################################
+# Builds
+########################################################
+
+build: ${PYPROJECT_CONFIG_FILE}
+	uv build ${ENGINE_DIR}
+
+publish: ${ENGINE_DIR}
+	uv publish
+
+########################################################
 # Tests
 ########################################################
 
@@ -64,6 +74,11 @@ init-gh-settings: ## Configure GitHub repository settings
 		--enable-squash-merge
 		--enable-rebase-merge=false
 		--enable-merge-commit=false
+
+# Push secrets to GH for deployment
+push-secrets: .env
+	gh secret set -f .env --app actions
+	gh secret set -f .env --app dependabot
 
 ########################################################
 # Mintlify docs
