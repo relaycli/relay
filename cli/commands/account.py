@@ -5,7 +5,7 @@
 
 """Account management CLI commands."""
 
-from typing import Callable
+from typing import Annotated, Callable
 
 import questionary
 import typer
@@ -95,43 +95,54 @@ def _get_provider_choice() -> EmailProvider:
     return provider_choice
 
 
-def _get_server_settings(provider: EmailProvider) -> tuple[str, int]:
-    """Get server settings for provider or prompt user."""
-    if provider in PROVIDER_CONFIGS:
-        imap_server = PROVIDER_CONFIGS[provider]["imap_server"]
-        imap_port = PROVIDER_CONFIGS[provider]["imap_port"]
-        console.print(f"[green]Using {provider.value} settings: {imap_server}:{imap_port}[/green]")
-        return imap_server, imap_port
-    imap_server = Prompt.ask("IMAP server", default="imap.gmail.com")
-    imap_port = int(Prompt.ask("IMAP port", default="993"))
-    return imap_server, imap_port
-
-
 # --- Command Functions ---
 
 
 @app.command("add")
 @_handle_account_errors
-def connect_account() -> None:
+def connect_account(
+    name: Annotated[str | None, typer.Option("--name", "-n", help="Account name")] = None,
+    email: Annotated[str | None, typer.Option("--email", "-e", help="Email address")] = None,
+    provider: Annotated[EmailProvider | None, typer.Option("--provider", "-p", help="Email provider")] = None,
+    imap_server: Annotated[
+        str | None, typer.Option("--imap-server", help="IMAP server address for custom providers")
+    ] = None,
+    imap_port: Annotated[int | None, typer.Option("--imap-port", help="IMAP port for custom providers")] = None,
+) -> None:
     """Add a new IMAP account with interactive setup."""
     console.print("[bold blue]Setting up new IMAP account[/bold blue]")
 
     # Get account name
-    name = Prompt.ask("Account name")
+    name = name or Prompt.ask("Account name")
 
     # Get email address
-    email = Prompt.ask("Email address")
+    email = email or Prompt.ask("Email address")
 
     # Auto-detect provider or ask for custom
-    email_domain = email.rpartition("@")[-1].lower()
-    provider = _detect_provider_from_domain(email_domain)
-
-    if provider == EmailProvider.CUSTOM:
-        console.print(f"[yellow]Unknown provider for domain: {email_domain}[/yellow]")
-        provider = _get_provider_choice()
+    final_provider = provider
+    if not final_provider:
+        email_domain = email.rpartition("@")[-1].lower()
+        final_provider = _detect_provider_from_domain(email_domain)
+        if final_provider == EmailProvider.CUSTOM:
+            console.print(f"[yellow]Unknown provider for domain: {email_domain}[/yellow]")
+            final_provider = _get_provider_choice()
 
     # Get server settings
-    imap_server, imap_port = _get_server_settings(provider)
+    final_imap_server = imap_server
+    if imap_server is None:
+        if final_provider in PROVIDER_CONFIGS:
+            final_imap_server = PROVIDER_CONFIGS[final_provider]["imap_server"]
+            console.print(f"[green]Using {final_provider.value} settings for IMAP server: {final_imap_server}[/green]")
+        else:
+            final_imap_server = Prompt.ask("IMAP server", default="imap.gmail.com")
+
+    final_imap_port = imap_port
+    if imap_port is None:
+        if final_provider in PROVIDER_CONFIGS:
+            final_imap_port = PROVIDER_CONFIGS[final_provider]["imap_port"]
+            console.print(f"[green]Using {final_provider.value} settings for IMAP port: {final_imap_port}[/green]")
+        else:
+            final_imap_port = int(Prompt.ask("IMAP port", default="993"))
 
     # Get password
     password = Prompt.ask("Password", password=True)
@@ -145,7 +156,12 @@ def connect_account() -> None:
 
     # Create and add account
     account_data = AccountCreate(
-        name=name, email=email, provider=provider, imap_server=imap_server, imap_port=imap_port, password=password
+        name=name,
+        email=email,
+        provider=final_provider,
+        imap_server=final_imap_server,
+        imap_port=final_imap_port,
+        password=password,
     )
 
     with console.status("[bold green]Testing connection...", spinner="dots"):
@@ -178,13 +194,16 @@ def list_accounts() -> None:
 
 @app.command("remove | rm")
 @_handle_account_errors
-def remove_account_connection(name: str) -> None:
+def remove_account_connection(
+    name: str,
+    force: Annotated[bool, typer.Option("--force", "-f", "-y", help="Force removal without confirmation")] = False,
+) -> None:
     """Remove an account."""
     manager = _get_account_manager()
 
     # Confirm deletion
     account = manager.get_account(name)
-    if not typer.confirm(f"Remove account '{name}' ({account.email})?"):
+    if not force and not typer.confirm(f"Remove account '{name}' ({account.email})?"):
         console.print("[yellow]Cancelled[/yellow]")
         return
 
