@@ -9,7 +9,6 @@ from email import message_from_bytes
 from email.message import EmailMessage
 from email.parser import Parser
 from email.utils import parsedate_to_datetime
-from functools import reduce
 from imaplib import IMAP4, IMAP4_SSL
 from socket import gaierror
 from typing import Any, cast
@@ -152,7 +151,9 @@ class IMAPClient:
 
     def _select(self, folder: str = "INBOX", readonly: bool = True) -> None:
         try:
-            self._imap.select(folder, readonly=readonly)
+            status_, res = self._imap.select(folder, readonly=readonly)
+            if status_ != "OK":
+                raise ValueError(res[0].decode())
         except IMAP4.error:
             raise ValidationError(f"Invalid folder: {folder}")
 
@@ -162,43 +163,47 @@ class IMAPClient:
         self._imap.close()
         return flags[0].decode().strip("()").split()
 
+    def _uid(self, command: str, *args, **kwargs) -> list[bytes | list[bytes]]:
+        try:
+            status_, res = self._imap.uid(command, *args, **kwargs)
+        except IMAP4.error as e:
+            self._imap.close()
+            if e.args[0].startswith("Unknown IMAP4 UID command"):
+                raise ValueError(e.args[0])
+            if e.args[0].endswith("only allowed in states SELECTED"):
+                raise AssertionError(e.args[0])
+            if e.args[0].startswith("UID command error"):
+                raise ValueError(e.args[0])
+            raise ValidationError(e)
+        if status_ != "OK":
+            self._imap.close()
+            raise ValidationError(status_)
+        return res
+
+    def _search(self, query: str) -> list[bytes]:
+        return cast(list[bytes], self._uid("SEARCH", None, query))
+
+    def _flags(self, uid: str, op: str, flags: str) -> None:
+        self._uid("STORE", uid, f"{op}FLAGS", flags)
+
+    def _copy(self, uid: str, folder: str) -> None:
+        self._uid("COPY", uid, folder)
+
+    def _fetch(self, uid: str, msg_parts: str) -> list[list[bytes]]:
+        return cast(list[list[bytes]], self._uid("FETCH", uid, msg_parts))
+
     def list_email_uids(self, unseen_only: bool = False, **kwargs) -> list[str]:
         self._select(readonly=True, **kwargs)
-        status_, res = self._imap.uid("SEARCH", None, "UNSEEN" if unseen_only else "ALL")
+        res = self._search("UNSEEN" if unseen_only else "ALL")
         self._imap.close()
-        if status_ != "OK":
-            raise ValidationError(status_)
-        return res[0].decode().split()
-
-    def search_uid(self, message_id: str, **kwargs) -> str:
-        self._select(readonly=True, **kwargs)
-        status_, res = self._imap.uid("SEARCH", None, f'HEADER Message-ID "{message_id}"')
-        self._imap.close()
-        if status_ != "OK":
-            raise ValidationError(status_)
-        return res[0].decode().split()
-
-    def search_uids(self, message_ids: list[str], **kwargs) -> list[str]:
-        if len(message_ids) == 0:
-            return []
-        if len(message_ids) == 1:
-            return [self.search_uid(message_ids[0], **kwargs)]
-        queries = [f'HEADER Message-ID "{message_id}"' for message_id in message_ids]
-        self._select(readonly=True, **kwargs)
-        status_, res = self._imap.uid("SEARCH", None, reduce(lambda acc, q: f"OR ({acc}) ({q})", queries))
-        self._imap.close()
-        if status_ != "OK":
-            raise ValidationError(status_)
         return res[0].decode().split()
 
     def fetch_message(
         self, uid: str, headers_set: set | None = None, include_quoted_body: bool = False, **kwargs
     ) -> dict[str, Any]:
         self._select(readonly=True, **kwargs)
-        status_, content = self._imap.uid("FETCH", uid, "(RFC822)")
+        content = self._fetch(uid, "(RFC822)")
         self._imap.close()
-        if status_ != "OK":
-            raise ValidationError(status_)
         message = cast(EmailMessage, message_from_bytes(content[0][1]))
         return {
             "uid": uid,
@@ -227,10 +232,8 @@ class IMAPClient:
             return []
 
         msg_parts = f"(BODY.PEEK[HEADER.FIELDS ({' '.join(tuple(headers_set))})])"
-        status_, content = self._imap.uid("FETCH", ",".join(uids), msg_parts.upper())
+        content = self._fetch(",".join(uids), msg_parts.upper())
         self._imap.close()
-        if status_ != "OK":
-            raise ValidationError(status_)
         parser_ = Parser()
         return [
             {"uid": uid, "headers": dict(parser_.parsestr(res[1].decode("utf-8"), headersonly=True).items())}
@@ -248,11 +251,8 @@ class IMAPClient:
         if len(uids) == 0:
             return []
 
-        msg_parts = "(RFC822)"
-        status_, content = self._imap.uid("FETCH", ",".join(uids), msg_parts.upper())
+        content = self._fetch(",".join(uids), "(RFC822)")
         self._imap.close()
-        if status_ != "OK":
-            raise ValidationError(status_)
         email_messages = [cast(EmailMessage, message_from_bytes(res[1])) for res in content[::2]]
         return [
             {
@@ -281,19 +281,13 @@ class IMAPClient:
     def mark_as_read(self, uid: str) -> None:
         """Mark email as read"""
         self._select("INBOX", readonly=False)
-        status_, _ = self._imap.uid("STORE", uid, "+FLAGS", "\\Seen")
-        if status_ != "OK":
-            self._imap.close()
-            raise ValidationError(f"Failed to mark message {uid} as read: {status_}")
+        self._flags(uid, "+", "\\Seen")
         self._imap.close()
 
     def mark_as_unread(self, uid: str) -> None:
         """Mark email as unread"""
         self._select("INBOX", readonly=False)
-        status_, _ = self._imap.uid("STORE", uid, "-FLAGS", "\\Seen")
-        if status_ != "OK":
-            self._imap.close()
-            raise ValidationError(f"Failed to mark message {uid} as unread: {status_}")
+        self._flags(uid, "-", "\\Seen")
         self._imap.close()
 
     def move_to_trash(self, uid: str) -> None:
@@ -301,16 +295,10 @@ class IMAPClient:
         self._select("INBOX", readonly=False)
 
         # First copy to trash folder
-        status_, _ = self._imap.uid("COPY", uid, self.config["folders"]["trash"])
-        if status_ != "OK":
-            self._imap.close()
-            raise ValidationError(f"Failed to copy message {uid} to trash: {status_}")
+        self._copy(uid, self.config["folders"]["trash"])
 
         # Then mark as deleted
-        status_, _ = self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
-        if status_ != "OK":
-            self._imap.close()
-            raise ValidationError(f"Failed to mark message {uid} as deleted: {status_}")
+        self._flags(uid, "+", "\\Deleted")
 
         # Finally expunge
         status_, _ = self._imap.expunge()
@@ -325,11 +313,7 @@ class IMAPClient:
         self._select("INBOX", readonly=False)
 
         # Mark as deleted
-        status_, _ = self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
-        if status_ != "OK":
-            self._imap.close()
-            raise ValidationError(f"Failed to mark message {uid} as deleted: {status_}")
-
+        self._flags(uid, "+", "\\Deleted")
         # Expunge to permanently delete
         status_, _ = self._imap.expunge()
         if status_ != "OK":
@@ -343,16 +327,10 @@ class IMAPClient:
         self._select("INBOX", readonly=False)
 
         # First copy to spam folder
-        status_, _ = self._imap.uid("COPY", uid, self.config["folders"]["spam"])
-        if status_ != "OK":
-            self._imap.close()
-            raise ValidationError(f"Failed to copy message {uid} to spam folder: {status_}")
+        self._copy(uid, self.config["folders"]["spam"])
 
         # Then mark as deleted from inbox
-        status_, _ = self._imap.uid("STORE", uid, "+FLAGS", "\\Deleted")
-        if status_ != "OK":
-            self._imap.close()
-            raise ValidationError(f"Failed to mark message {uid} as deleted: {status_}")
+        self._flags(uid, "+", "\\Deleted")
 
         # Finally expunge from inbox
         status_, _ = self._imap.expunge()
