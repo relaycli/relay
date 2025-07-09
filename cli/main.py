@@ -28,8 +28,7 @@ app.add_typer(messages_app, name="messages")
 @app.command()
 def version():
     """Show version information."""
-    console.print(f"[bold blue]Relay CLI v{relay.__version__}[/bold blue]")
-    console.print("Email management library and CLI")
+    console.print(f"[bold blue]relay {relay.__version__}[/bold blue]")
 
 
 if __name__ == "__main__":

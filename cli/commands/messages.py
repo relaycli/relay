@@ -6,9 +6,10 @@
 """Messages CLI commands."""
 
 import functools
-from datetime import datetime, timezone
-from enum import Enum
-from typing import Annotated, Any, Callable
+from collections.abc import Callable
+from datetime import UTC, datetime
+from enum import StrEnum
+from typing import Annotated, Any
 
 import typer
 from rich.console import Console
@@ -29,7 +30,7 @@ def format_timestamp_to_utc(timestamp_str: str) -> str:
     # Parse ISO format with timezone
     dt = datetime.fromisoformat(timestamp_str)
     # Convert to UTC and format
-    return dt.astimezone(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    return dt.astimezone(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
 
 # --- Helper Functions for DRY Code ---
@@ -40,6 +41,7 @@ def _get_account_manager_and_client(account: str) -> tuple[AccountManager, Any, 
 
     Returns:
         Tuple of (AccountManager, IMAPClient, account_name)
+
     """
     manager = AccountManager()
 
@@ -63,7 +65,7 @@ def _get_account_manager_and_client(account: str) -> tuple[AccountManager, Any, 
 
 
 def _handle_common_errors(func: Callable) -> Callable:
-    """Decorator to handle common IMAP errors."""
+    """Decorate to handle common IMAP errors."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -194,7 +196,7 @@ def open_message(
 def search_messages(
     query: Annotated[str, typer.Argument(help="Search query")],
     account: Annotated[str, typer.Option("--account", "-a", help="Account name to use")] = "",
-    count: Annotated[int, typer.Option("--count", "-c", help="Number of messages to search")] = 100,
+    limit: Annotated[int, typer.Option("--limit", "-l", help="Number of messages to search")] = 100,
 ):
     """Search for messages containing the specified query."""
     manager, client, account = _get_account_manager_and_client(account)
@@ -203,7 +205,7 @@ def search_messages(
     with console.status(f"[bold green]Searching for '{query}'...", spinner="dots"):
         # Get recent messages to search through
         uids = client.list_email_uids(unseen_only=False)
-        search_uids = uids[:count]
+        search_uids = uids[:limit]
 
         if not search_uids:
             client.logout()
@@ -236,7 +238,7 @@ def search_messages(
 
     # Sort by date (newest first) - handle cases where date might be empty
     message_summaries.sort(
-        key=lambda x: datetime.fromisoformat(x.date) if x.date else datetime.min.replace(tzinfo=timezone.utc),
+        key=lambda x: datetime.fromisoformat(x.date) if x.date else datetime.min.replace(tzinfo=UTC),
         reverse=True,
     )
 
@@ -283,7 +285,9 @@ def mark_message_spam(
     console.print(f"[green]✓ Message {uid} marked as spam[/green]")
 
 
-class Status(str, Enum):
+class Status(StrEnum):
+    """Message status."""
+
     READ = "read"
     UNREAD = "unread"
 

@@ -14,9 +14,11 @@ __all__ = ["AliasGroup", "create_accounts_table", "create_messages_table", "crea
 
 # cf. https://github.com/fastapi/typer/issues/132
 class AliasGroup(TyperGroup):
+    """Typer class to allow aliases for commands."""
+
     _CMD_SPLIT_P = re.compile(r" ?[,|] ?")
 
-    def get_command(self, ctx, cmd_name):
+    def get_command(self, ctx, cmd_name):  # noqa: D102
         cmd_name = self._group_cmd_name(cmd_name)
         return super().get_command(ctx, cmd_name)
 

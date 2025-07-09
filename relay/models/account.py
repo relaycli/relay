@@ -5,24 +5,14 @@
 
 """Account models for the Relay library."""
 
-from enum import Enum
 from typing import Annotated
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from ..providers.utils import resolve_provider
+from .base import EmailProvider
 
-__all__ = ["Account", "AccountCreate", "AccountInfo", "EmailProvider"]
-
-
-class EmailProvider(str, Enum):
-    """Supported email providers."""
-
-    GMAIL = "gmail"
-    OUTLOOK = "outlook"
-    YAHOO = "yahoo"
-    ICLOUD = "icloud"
-    CUSTOM = "custom"
+__all__ = ["Account", "AccountCreate", "AccountInfo"]
 
 
 # Common IMAP server configurations

@@ -24,6 +24,7 @@ class AccountStorage:
 
         Args:
             config_dir: Directory to store account data (defaults to ~/.relay)
+
         """
         if config_dir is None:
             config_dir = Path.home() / ".relay"
@@ -41,6 +42,7 @@ class AccountStorage:
 
         Returns:
             Dictionary of account data
+
         """
         if not self.accounts_file.exists():
             return {}
@@ -54,15 +56,17 @@ class AccountStorage:
                 if "encrypted_password" in account_data:
                     account_data["encrypted_password"] = base64.b64decode(account_data["encrypted_password"])
 
-            return data
         except (OSError, json.JSONDecodeError, ValueError) as e:
             raise StorageError(f"Failed to load accounts data: {e}")
+        else:
+            return data
 
     def _save_accounts_data(self, data: dict[str, dict]) -> None:
         """Save accounts data to file.
 
         Args:
             data: Dictionary of account data
+
         """
         try:
             self._ensure_config_dir()
@@ -93,9 +97,6 @@ class AccountStorage:
 
         Returns:
             Created account
-
-        Raises:
-            AccountExistsError: If account name already exists
         """
         accounts = self._load_accounts_data()
 
@@ -145,6 +146,7 @@ class AccountStorage:
 
         Returns:
             List of account information
+
         """
         accounts = self._load_accounts_data()
 
@@ -196,6 +198,7 @@ class AccountStorage:
 
         Raises:
             AccountNotFoundError: If account doesn't exist
+
         """
         account = self.get_account(name)
         return self.credential_manager.decrypt_password(account.encrypted_password)

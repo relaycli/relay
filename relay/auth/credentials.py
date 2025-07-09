@@ -41,7 +41,6 @@ class CredentialManager:
             self.key_file.chmod(0o600)  # Owner read/write only
 
     def _get_fernet(self) -> Fernet:
-        """Get or create the Fernet instance."""
         if self._fernet is None:
             self._ensure_key_exists()
             try:

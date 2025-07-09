@@ -33,18 +33,12 @@ class AccountManager:
 
         Returns:
             Created account
-
-        Raises:
-            AccountExistsError: If account name already exists
-            ValidationError: If account data is invalid
-            ServerConnectionError: If cannot connect to IMAP server
-            AuthenticationError: If IMAP credentials are invalid
         """
         # Validate account data using Pydantic v2
         account_data = AccountCreate.model_validate(account_data.model_dump())
 
         # Test connection before saving
-        self.test_connection(
+        test_connection(
             account_data.email,
             account_data.password,
             account_data.imap_server,
@@ -60,9 +54,6 @@ class AccountManager:
 
         Args:
             name: Account name
-
-        Raises:
-            AccountNotFoundError: If account doesn't exist
         """
         self.storage.remove_account(name)
 
@@ -82,9 +73,6 @@ class AccountManager:
 
         Returns:
             Account data
-
-        Raises:
-            AccountNotFoundError: If account doesn't exist
         """
         return self.storage.get_account(name)
 
@@ -96,11 +84,6 @@ class AccountManager:
 
         Returns:
             True if connection successful
-
-        Raises:
-            AccountNotFoundError: If account doesn't exist
-            ServerConnectionError: If cannot connect to IMAP server
-            AuthenticationError: If IMAP credentials are invalid
         """
         account = self.storage.get_account(name)
         password = self.storage.get_account_password(name)
@@ -126,9 +109,6 @@ class AccountManager:
 
         Returns:
             Configured IMAP client
-
-        Raises:
-            AccountNotFoundError: If account doesn't exist
         """
         account = self.storage.get_account(name)
         password = self.storage.get_account_password(name)
@@ -154,10 +134,6 @@ def test_connection(email: str, password: str, imap_server: str, imap_port: int,
 
     Returns:
         True if connection successful
-
-    Raises:
-        ServerConnectionError: If cannot connect to IMAP server
-        AuthenticationError: If IMAP credentials are invalid
     """
     client = IMAPClient(
         imap_server=imap_server, email_address=email, password=password, imap_port=imap_port, provider=provider

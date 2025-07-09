@@ -94,13 +94,8 @@ preview = true
 
 [tool.ruff.lint]
 select = [
-    "F",  # pyflakes
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "I",  # isort
-    "N",  # pep8-naming
-    # "D101", "D103",  # pydocstyle missing docstring in public function/class
-    "D201","D202","D207","D208","D214","D215","D300","D301","D417", "D419",  # pydocstyle
+    "ERA",  # eradicate
+    "FAST",  # FastAPI
     "YTT",  # flake8-2020
     "ANN",  # flake8-annotations
     "ASYNC",  # flake8-async
@@ -109,8 +104,8 @@ select = [
     "B",  # flake8-bugbear
     "A",  # flake8-builtins
     "COM",  # flake8-commas
-    "CPY",  # flake8-copyright
     "C4",  # flake8-comprehensions
+    "CPY",  # flake8-copyright
     "DTZ",  # flake8-datetimez
     "T10",  # flake8-debugger
     "ISC",  # flake8-implicit-str-concat
@@ -120,21 +115,32 @@ select = [
     "T20",  # flake8-print
     "PYI",  # flake8-pyi
     "PT",  # flake8-pytest-style
+    "Q",  # flake8-quotes
     "RET",  # flake8-return
+    "SLF",  # flake8-self
     "SIM",  # flake8-simplify
     "ARG",  # flake8-unused-arguments
     "PTH",  # flake8-use-pathlib
-    "PERF",  # perflint
+    "FLY",  # flynt
+    "I",  # isort
     "NPY",  # numpy
+    "N",  # pep8-naming
+    "PERF",  # perflint
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "DOC",  # pydoclint
+    "D",  # pydocstyle
+    "F",  # pyflakes
+    "PGH",  # pygrep-hooks
+    "PL",  # pylint
+    "UP",  # pyupgrade
     "FURB",  # refurb
     "RUF",  # ruff specific
-    "PL",  # pylint
+    "TRY",  # tryceratops
 ]
 ignore = [
-    "E501",  # line too long, handled by black
-    "B008",  # do not perform function calls in argument defaults
+    "E501",  # line too long, handled by formatting
     "B904",  # raise from
-    "C901",  # too complex
     "F403",  # star imports
     "E731",  # lambda assignment
     "C416",  # list comprehension to list()
@@ -143,6 +149,10 @@ ignore = [
     "COM812",  # trailing comma missing
     "ISC001",  # implicit string concatenation (handled by format)
     "PLR",  # Pylint refactor
+    "TRY003",  # Avoid specifying long messages outside the exception class
+    "D203",  # incorrect-blank-line-before-class
+    "D213",  # multi-line-summary-second-line
+    "D413",  # Missing blank line after last section
 ]
 exclude = [".git"]
 
@@ -154,11 +164,11 @@ known-first-party = ["tests", "relay"]
 known-third-party = ["typer", "aioimaplib", "pydantic"]
 
 [tool.ruff.lint.per-file-ignores]
-"**/__init__.py" = ["I001", "F401", "CPY001"]
+"**/__init__.py" = ["I001", "F401", "CPY001", "D104"]
 "**/version.py" = ["CPY001"]
 ".github/**.py" = ["D", "T201", "ANN"]
-"tests/**.py" = ["D103", "CPY001", "S101", "T201", "ANN001", "ANN201", "ANN202", "ARG001", "RUF029", "RUF030", "DTZ003", "PT003"]
-"cli/**.py" = ["ANN", "BLE001"]
+"tests/**.py" = ["D103", "CPY001", "S101", "T201", "ANN001", "ANN201", "ANN202", "ARG001", "RUF029", "RUF030", "DTZ003", "PT003", "DOC", "D", "SLF"]
+"cli/**.py" = ["ANN", "BLE001", "DOC"]
 "relay/**.py" = ["PT028"]
 
 [tool.ruff.format]

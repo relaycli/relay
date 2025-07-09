@@ -4,7 +4,7 @@
 # See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
 
 
-from ..models.account import EmailProvider
+from ..models.base import EmailProvider
 
 __all__ = ["resolve_provider"]
 

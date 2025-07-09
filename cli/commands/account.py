@@ -6,7 +6,8 @@
 """Account management CLI commands."""
 
 import functools
-from typing import Annotated, Callable
+from collections.abc import Callable
+from typing import Annotated
 
 import questionary
 import typer
@@ -34,7 +35,7 @@ app = typer.Typer(help="Account management commands", cls=AliasGroup)
 
 
 def _handle_account_errors(func: Callable) -> Callable:
-    """Decorator to handle common account management errors."""
+    """Decorate function to handle common account management errors."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
