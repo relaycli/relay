@@ -1,0 +1,19 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+# User journeys
+
+## User description
+The users of this project are:
+- professional developers experiencing vendor-locking with email solutions
+- hobbyist and builders focused on prototyping multiple ideas quickly
+
+
+## Journey description
+- The user installs the CLI
+- They connect their main email account, entering their credentials
+- They fetch their first email
+- They give the CLI documentation to their coding LLM to perform tasks on it

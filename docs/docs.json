@@ -1,0 +1,108 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Relay",
+  "colors": {
+    "primary": "#16A34A",
+    "light": "#07C983",
+    "dark": "#15803D"
+  },
+  "favicon": "/logo/dark.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "documentation/getting-started/introduction",
+              "documentation/getting-started/quickstart",
+              "documentation/getting-started/concepts"
+            ]
+          },
+          {
+            "group": "Community & support",
+            "pages": [
+              "documentation/community/roadmap",
+              "documentation/community/contributing",
+              "documentation/community/faq",
+              "documentation/community/support"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "groups": [
+          {
+            "group": "Changelog",
+            "pages": [
+              "changelog/overview"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Documentation",
+          "href": "https://docs.relaycli.com",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Community",
+          "href": "https://discord.gg/T4zbT7RcVy",
+          "icon": "discord"
+        },
+        {
+          "anchor": "Manifesto",
+          "href": "https://relaycli.com/manifesto",
+          "icon": "feather"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://relaycli.com"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:hi@relaycli.com"
+      }
+    ],
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/relaycli/relay"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/relaycli",
+      "github": "https://github.com/relaycli",
+      "linkedin": "https://linkedin.com/company/relaycli"
+    }
+  },
+  "seo": {
+    "metatags": {
+      "og:title": "Relay",
+      "og:description": "Email infrastructure for modern applications"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  },
+  "fonts": {
+    "family": "Geist Mono"
+  }
+}

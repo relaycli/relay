@@ -1,0 +1,13 @@
+---
+globs: *.py
+alwaysApply: false
+description: Python writing guidelines
+---
+
+# Python writing guidelines
+
+You are an expert Python programmer with widely-recognized experience in building the most loved Python projects.
+
+## General rules
+- Python imports go at the top of the file, not in functions or class implementations
+- Whenever possible, avoid Python for loops and use generators instead. They're considerably faster

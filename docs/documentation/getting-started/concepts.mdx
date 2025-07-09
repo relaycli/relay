@@ -1,0 +1,81 @@
+---
+title: 'Key concepts'
+description: 'How modern e-mail really works and the pieces we build on'
+---
+
+<Note>Why read this? You don’t need to memorize every RFC to use Relay, but a 5-minute tour of the landscape helps you debug faster — and impress friends at parties.</Note>
+
+## Standards & Governance
+
+### IETF
+Internet Engineering Task Force – the community that writes the open specifications powering e-mail, HTTP, TLS, etc.
+All core mail specs are “RFCs” (Request for Comments) published by the IETF.
+
+### RFC
+A numbered document that defines a protocol. Example: RFC 5322 specifies e-mail headers.
+Every server and client that follows the same RFC can inter-operate – that’s why you can fetch Gmail via Apple Mail.
+
+## Anatomy of an email
+* Headers: key-value pairs describing sender, recipients, threading
+* Body: one or more <Tooltip tip="Multipurpose Internet Mail Extensions">MIME</Tooltip> “parts” (plain text, HTML, PDF, images)
+
+```shell email example
+Headers
+  From:       alice@example.com
+  To:         bob@example.org
+  Subject:    Weekly sync?
+  Message-ID: <CA123@example.com>
+  In-Reply-To:<B7@example.org>
+
+Body (plain text or HTML + attachments)
+```
+
+## Email Protocols
+* <Tooltip tip="Internet Messaging Access Protocol">IMAP</Tooltip> (RFC 3501) — read & organize mail.
+* IDLE (RFC 2177) — real-time notifications.
+* <Tooltip tip="Post Office Protocol">POP3</Tooltip> (RFC 1939) — download and delete mail.
+* <Tooltip tip="Simple Mail Transfer Protocol">SMTP</Tooltip> (RFC 5321) — send mail.
+* <Tooltip tip="JSON Meta Application Protocol">JMAP</Tooltip> (RFC 8620) — modern JSON read/send.
+
+
+## From Server to App: Who Does What?
+
+| Layer | Acronym | Example software | What it does |
+| ----- | ------- | ---------------- | ------------ |
+| Mail Transfer Agent | MTA | Postfix, Exim | Routes SMTP traffic between domains. |
+| Mail Delivery Agent | MDA | Dovecot, Courier | Saves incoming mail to the user’s mailbox. |
+| Mail User Agent | MUA | Outlook, Thunderbird | <Tooltip tip="Graphical User Interface">GUI</Tooltip> that people click. |
+| Relay | - | (open-core) | Sits between MUA and IMAP, giving dev-friendly JSON + webhooks. |
+
+## Providers vs. Clients
+* Provider = organization hosting an MTA/MDA (Gmail, Outlook, Proton, your own VPS).
+* Client = anything that logs in to read or send mail (iOS Mail, Superhuman, your script).
+
+Relay treats every provider the same as long as it offers IMAP/SMTP. Your code talks to a single /messages endpoint.
+
+## Email APIs vs. Delivery APIs
+
+Both provide programmable access to email-related operations.
+
+| Category | Examples | Focus |
+| -------- | -------- | ----- |
+| Delivery APIs | Resend, SendGrid, SES | High-volume outbound (newsletters, receipts). |
+| Interaction APIs | Relay | Read, search, tag, reply, build full apps. |
+
+Use both together: Resend for blasts, Relay for smart follow-ups.
+
+## Key Terminology in Relay
+
+| Term | Short definition |
+| ---- | ---------------- |
+| Email account | IMAP/SMTP credential set you connect |
+| Message | A single e-mail, defined by its Message-ID or IMAP UID. |
+| Thread | All messages sharing References/In-Reply-To headers |
+| Label | User-defined tag saved server-side; survives new messages. |
+
+
+## Ready?
+Head back to [Quick-start](/documentation/getting-started/quickstart).
+We can’t wait to see what you’ll build!
+
+Happy hacking — and welcome to programmable e-mail.

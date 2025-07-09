@@ -1,0 +1,61 @@
+---
+title: 'Quickstart'
+description: 'From zero to "Hello inbox" in under 5 minutes'
+---
+
+## Build your first e-mail app (hosted cloud)
+
+<Steps>
+  <Step title="Grab your mailbox credentials">
+    <Tabs>
+      <Tab title="Gmail">
+        * Head over to [App passwords](https://myaccount.google.com/apppasswords)
+        * Enter an App name (e.g. "Relay")
+        * Click on "Create" and save the password
+
+        <Info>
+          If you encounter any issue, make sure that App passwords are available for your account ([Gmail Help](https://support.google.com/mail/answer/185833)).
+          As of July 2025, all you need is to turn [2-Step verification](https://support.google.com/accounts/answer/185839) on.
+        </Info>
+      </Tab>
+      <Tab title="Outlook">
+        Follow the steps in [How to get and use app passwords](https://support.microsoft.com/en-us/account-billing/how-to-get-and-use-app-passwords-5896ed9b-4263-e681-128a-a6f2979a7944)
+      </Tab>
+      <Tab title="Custom IMAP host">
+        Copy your account password
+      </Tab>
+    </Tabs>
+  </Step>
+  <Step title="Install the CLI">
+    <CodeGroup>
+    ```shell title="uv" icon="python"
+    uv pip install relaycli
+    ```
+    ```shell title="pip" icon="python"
+    pip install relaycli
+    ```
+    </CodeGroup>
+  </Step>
+  <Step title="Connect the inbox">
+    ```shell
+    relay account add
+    ```
+  </Step>
+  <Step title="Try out CLI commands">
+    <CodeGroup>
+    ```shell title="fetch recent emails"
+    relay messages ls
+    ```
+    ```shell title="search your inbox"
+    relay messages grep "Pied piper"
+    ```
+    ```shell title="read a specific message"
+    relay messages cat <message_uid>
+    ```
+    </CodeGroup>
+
+  </Step>
+  <Step title="Build an email digest (optional)">
+    Now it's your turn!.
+  </Step>
+</Steps>

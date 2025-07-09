@@ -1,0 +1,189 @@
+[build-system]
+requires = ["uv_build>=0.7.19,<0.8.0"]
+build-backend = "uv_build"
+
+[project]
+name = "relaycli"
+version = "0.0.1.dev0"
+description = "Open-source IMAP-native replacement for Gmail API"
+requires-python = ">=3.10,<4.0"
+license = { file = "LICENSE" }
+authors = [{ name = "Relay team", email = "support@relaycli.com" }]
+readme = "README.md"
+keywords = ["cli", "imap", "smtp", "gmail", "outlook", "email", "inbox"]
+dependencies = [
+    "pydantic>=2.10.0,<3.0.0",
+    "email-validator>=2.0.0,<3.0.0",
+    "cryptography>=44.0.0,<46.0.0",
+    "beautifulsoup4>=4.12.3,<5.0.0",
+    "html2text>=2025.4.15",
+    "typer>=0.16.0,<1.0.0",
+    "rich>=13.0.0,<14.0.0",
+    "questionary>=2.0.0,<3.0.0",
+]
+classifiers = [
+    # https://pypi.org/classifiers/
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Framework :: Pydantic",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Communications :: Email",
+    "Topic :: Communications :: Email :: Post-Office",
+    "Topic :: Communications :: Email :: Post-Office :: IMAP",
+    "Topic :: Communications :: Email :: Post-Office :: POP3",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+quality = [
+    "ruff==0.12.2",
+    "ty==0.0.1a14",
+    "pre-commit==4.2.0",
+]
+test = [
+    "pytest>=8.3.3,<9.0.0",
+    "pytest-cov>=6.0.0,<7.0.0",
+    "pytest-pretty>=1.0.0,<2.0.0",
+    "pytest-mock>=3.14.1,<4.0.0",
+]
+
+[project.scripts]
+relay = "cli.main:app"
+
+[project.urls]
+homepage = "https://relaycli.com"
+repository = "https://github.com/relaycli/relay"
+documentation = "https://docs.relaycli.com"
+issues = "https://github.com/relaycli/relay/issues"
+releasenotes = "https://github.com/relaycli/relay/releases"
+logo = "https://zugjkckdxhiamdlkxfmv.supabase.co/storage/v1/object/public/assets//logo_dark.svg"
+
+[tool.uv.build-backend]
+module-name = "relay"
+module-root = ""
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[tool.coverage.run]
+source = ["relay"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+preview = true
+
+[tool.ruff.lint]
+select = [
+    "ERA",  # eradicate
+    "FAST",  # FastAPI
+    "YTT",  # flake8-2020
+    "ANN",  # flake8-annotations
+    "ASYNC",  # flake8-async
+    "S",  # flake8-bandit
+    "BLE",  # flake8-blind-except
+    "B",  # flake8-bugbear
+    "A",  # flake8-builtins
+    "COM",  # flake8-commas
+    "C4",  # flake8-comprehensions
+    "CPY",  # flake8-copyright
+    "DTZ",  # flake8-datetimez
+    "T10",  # flake8-debugger
+    "ISC",  # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+    "LOG",  # flake8-logging
+    "PIE",  # flake8-pie
+    "T20",  # flake8-print
+    "PYI",  # flake8-pyi
+    "PT",  # flake8-pytest-style
+    "Q",  # flake8-quotes
+    "RET",  # flake8-return
+    "SLF",  # flake8-self
+    "SIM",  # flake8-simplify
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "FLY",  # flynt
+    "I",  # isort
+    "NPY",  # numpy
+    "N",  # pep8-naming
+    "PERF",  # perflint
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "DOC",  # pydoclint
+    "D",  # pydocstyle
+    "F",  # pyflakes
+    "PGH",  # pygrep-hooks
+    "PL",  # pylint
+    "UP",  # pyupgrade
+    "FURB",  # refurb
+    "RUF",  # ruff specific
+    "TRY",  # tryceratops
+]
+ignore = [
+    "E501",  # line too long, handled by formatting
+    "B904",  # raise from
+    "F403",  # star imports
+    "E731",  # lambda assignment
+    "C416",  # list comprehension to list()
+    "ANN002",  # missing type annotations on *args
+    "ANN003",  # missing type annotations on **kwargs
+    "COM812",  # trailing comma missing
+    "ISC001",  # implicit string concatenation (handled by format)
+    "PLR",  # Pylint refactor
+    "TRY003",  # Avoid specifying long messages outside the exception class
+    "D203",  # incorrect-blank-line-before-class
+    "D213",  # multi-line-summary-second-line
+    "D413",  # Missing blank line after last section
+    "D100",  # Missing docstring in public module
+    "DOC502",  # Raised exception is not explicitly raised (not working with custom exceptions)
+]
+exclude = [".git"]
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.lint.isort]
+known-first-party = ["tests", "relay"]
+known-third-party = ["typer", "aioimaplib", "pydantic"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["I001", "F401", "CPY001", "D104"]
+"**/version.py" = ["CPY001"]
+".github/**.py" = ["D", "T201", "ANN"]
+"tests/**.py" = ["D103", "CPY001", "S101", "T201", "ANN001", "ANN201", "ANN202", "ARG001", "RUF029", "RUF030", "DTZ003", "PT003", "DOC", "D", "SLF"]
+"cli/**.py" = ["ANN", "BLE001", "DOC"]
+"relay/**.py" = ["PT028"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=relay"
+
+[tool.ty.environment]
+python-version = "3.11"
+python-platform = "linux"
+
+[tool.ty.rules]
+unresolved-import = "warn"

@@ -1,0 +1,53 @@
+---
+title: "FAQ"
+description: "Find answers to the most frequent questions of the community."
+icon: "circle-question"
+---
+
+Check out the answers to the most frequently asked questions about Relay. If you weren't able to find an answer to your question, connect with the team on [Discord](https://discord.gg/T4zbT7RcVy) or [GitHub](https://github.com/relaycli/relay).
+
+<Accordion title="What problem does Relay solve?">
+  Building apps that **read, classify, and react to e-mail** is still painful—rate-limited Gmail APIs or raw IMAP sockets.
+  Relay gives you a modern CLI and library to manage emails locally, with clean Python APIs for building email-powered applications.
+</Accordion>
+
+<Accordion title="How do I get started?">
+  Install the CLI with `pip install relaycli`, then run `relay account add` to connect your first email account.
+  The [quickstart guide](/documentation/getting-started/quickstart) walks you through the entire setup in under 5 minutes.
+</Accordion>
+
+<Accordion title="Which email providers are supported?">
+  Any inbox that speaks IMAP/SMTP: Gmail, Outlook, Yahoo, FastMail, or your own Dovecot/Postfix server.
+  The same CLI commands work across all of them.
+</Accordion>
+
+<Accordion title="How are my credentials stored?">
+  All credentials are stored locally on your machine, encrypted using your OS keychain (macOS Keychain, Windows Credential Manager, Linux Secret Service).
+  Nothing is sent to external servers.
+</Accordion>
+
+<Accordion title="How is this different from Gmail API or other email APIs?">
+  * **Gmail API** → Google-only, strict quotas, complex OAuth flows.
+  * **SaaS email APIs** → cloud-locked, proprietary, often read-only, expensive.
+  * **Relay** → open-source, runs locally, works with any IMAP provider, full read/write access, free.
+</Accordion>
+
+<Accordion title="What can I build with Relay?">
+  * Email automation scripts and bots
+  * Custom email clients or dashboards
+  * Smart auto-responders and filters
+  * Integration with other business tools
+  * Voice-controlled email interfaces
+
+  If it involves reading, searching, or managing emails, you can build it with Relay.
+</Accordion>
+
+<Accordion title="Can I manage multiple email accounts?">
+  Yes! Connect unlimited email accounts with `relay account add` and switch between them or manage them all simultaneously.
+  Each account gets its own secure credential storage.
+</Accordion>
+
+<Accordion title="Is Relay free to use?">
+  Yes! The core Relay CLI and library are completely free and open-source.
+  Optional cloud services may be introduced in the future, but the local functionality will always remain free.
+</Accordion>
