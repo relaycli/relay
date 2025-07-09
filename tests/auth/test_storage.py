@@ -15,7 +15,7 @@ from relay.models.account import AccountCreate, EmailProvider
 SAMPLE_ACCOUNT = AccountCreate(
     name="test_account",
     email="test@example.com",
-    password="supersecret",
+    password="supersecret",  # noqa: S106
     provider=EmailProvider.CUSTOM,
     imap_server="imap.example.com",
 )

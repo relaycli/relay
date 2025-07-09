@@ -21,7 +21,7 @@ def test_credential_manager_init(credential_manager: CredentialManager):
 
 def test_password_encryption_decryption(credential_manager: CredentialManager):
     """Test that a password can be encrypted and decrypted correctly."""
-    password = "my-secret-password"
+    password = "my-secret-password"  # noqa: S105
     encrypted_password = credential_manager.encrypt_password(password)
     assert isinstance(encrypted_password, bytes)
     decrypted_password = credential_manager.decrypt_password(encrypted_password)

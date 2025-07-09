@@ -6,6 +6,7 @@
 """Pytest configuration and fixtures."""
 
 import tempfile
+from collections.abc import Generator
 from pathlib import Path
 
 import pytest
@@ -15,7 +16,7 @@ from relay.auth.storage import AccountStorage
 
 
 @pytest.fixture(scope="function")
-def config_dir() -> Path:
+def config_dir() -> Generator[Path, None, None]:
     """Creates a temporary directory for config files."""
     with tempfile.TemporaryDirectory() as tmpdir:
         yield Path(tmpdir)

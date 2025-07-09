@@ -155,7 +155,7 @@ known-third-party = ["typer", "aioimaplib", "pydantic"]
 "**/__init__.py" = ["I001", "F401", "CPY001"]
 "**/version.py" = ["CPY001"]
 ".github/**.py" = ["D", "T201", "ANN"]
-"tests/**.py" = ["D103", "CPY001", "S101", "T201", "ANN001", "ANN201", "ANN202", "ARG001", "RUF029", "RUF030", "DTZ003"]
+"tests/**.py" = ["D103", "CPY001", "S101", "T201", "ANN001", "ANN201", "ANN202", "ARG001", "RUF029", "RUF030", "DTZ003", "PT003"]
 "cli/**.py" = ["ANN", "BLE001"]
 
 [tool.ruff.format]
