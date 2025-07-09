@@ -1,4 +1,5 @@
 ENGINE_DIR = .
+PACKAGE_DIR = ${ENGINE_DIR}/relay
 CLI_DIR = ./cli
 DOCS_DIR = ./docs
 PYPROJECT_CONFIG_FILE = ${ENGINE_DIR}/pyproject.toml
@@ -48,18 +49,24 @@ style: lint-format precommit ## Format code and run pre-commit hooks
 # Builds
 ########################################################
 
-set-version: ${PYPROJECT_CONFIG_FILE}
+set-version: ${PYPROJECT_CONFIG_FILE} ## Set the version in the pyproject.toml file
 	uv version --frozen --no-build ${BUILD_VERSION}
 
-build: ${PYPROJECT_CONFIG_FILE}
+build: ${PYPROJECT_CONFIG_FILE} ## Build the package
 	uv build ${ENGINE_DIR}
 
-publish: ${ENGINE_DIR}
+publish: ${ENGINE_DIR} ## Publish the package to PyPI
 	uv publish
 
 ########################################################
 # Tests
 ########################################################
+
+install-test: ${ENGINE_DIR} ${PYPROJECT_CONFIG_FILE} ## Install with test dependencies
+	uv pip install --system -e '${ENGINE_DIR}[test]'
+
+test: ${PYPROJECT_CONFIG_FILE} ## Run the tests
+	pytest
 
 
 ########################################################
