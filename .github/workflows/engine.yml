@@ -17,6 +17,8 @@ on:
       - 'pyproject.toml'
       - 'Makefile'
       - '.github/workflows/engine.yml'
+  release:
+    types: [published]
 
 env:
   UV_VERSION: "0.7.19"
@@ -25,6 +27,7 @@ env:
 
 jobs:
   engine:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -81,3 +84,57 @@ jobs:
           version: ${{ env.UV_VERSION }}
       - name: Run dependency sync checker
         run: make deps-check
+  
+  build:
+    if: github.event_name != 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          architecture: x64
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Build the package
+        run: make build
+
+  publish:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      # For PyPI's trusted publishing.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          architecture: x64
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Publish to PyPI
+        env:
+          UV_PUBLISH_USERNAME: __token__
+          UV_PUBLISH_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          make build && make publish
+  
+  verify-publish:
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          architecture: x64
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: ${{ env.UV_VERSION }}
+      - name: Install package
+        run: |
+          uv pip install --system relaycli
+          relay version

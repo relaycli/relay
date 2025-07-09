@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "relaycli"
-version = "0.0.1.dev0"
+version = "0.0.1a0"
 description = "Open-source IMAP-native replacement for Gmail API"
 requires-python = ">=3.10,<4.0"
 license = { file = "LICENSE" }
