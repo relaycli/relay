@@ -84,7 +84,7 @@ jobs:
           version: ${{ env.UV_VERSION }}
       - name: Run dependency sync checker
         run: make deps-check
-  
+
   build:
     if: github.event_name != 'release'
     runs-on: ubuntu-latest
@@ -136,7 +136,7 @@ jobs:
         run: |
           make set-version
           make build && make publish
-  
+
   verify-publish:
     runs-on: ubuntu-latest
     needs: publish
