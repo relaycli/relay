@@ -54,12 +54,13 @@ classifiers = [
 quality = [
     "ruff==0.12.2",
     "ty==0.0.1a14",
-    "pre-commit==4.2.0"
+    "pre-commit==4.2.0",
 ]
 test = [
     "pytest>=8.3.3,<9.0.0",
     "pytest-cov>=6.0.0,<7.0.0",
-    "pytest-pretty>=1.0.0,<2.0.0"
+    "pytest-pretty>=1.0.0,<2.0.0",
+    "pytest-mock>=3.14.1,<4.0.0",
 ]
 
 [project.scripts]
