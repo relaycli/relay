@@ -66,7 +66,7 @@ install-test: ${ENGINE_DIR} ${PYPROJECT_CONFIG_FILE} ## Install with test depend
 	uv pip install --system -e '${ENGINE_DIR}[test]'
 
 test: ${PYPROJECT_CONFIG_FILE} ## Run the tests
-	pytest
+	pytest --cov-report xml
 
 
 ########################################################
