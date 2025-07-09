@@ -48,6 +48,9 @@ style: lint-format precommit ## Format code and run pre-commit hooks
 # Builds
 ########################################################
 
+set-version: ${PYPROJECT_CONFIG_FILE}
+	uv version --frozen --no-build ${BUILD_VERSION}
+
 build: ${PYPROJECT_CONFIG_FILE}
 	uv build ${ENGINE_DIR}
 
