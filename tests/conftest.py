@@ -14,20 +14,20 @@ from relay.auth.credentials import CredentialManager
 from relay.auth.storage import AccountStorage
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def config_dir() -> Path:
     """Creates a temporary directory for config files."""
     with tempfile.TemporaryDirectory() as tmpdir:
         yield Path(tmpdir)
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def credential_manager(config_dir: Path) -> CredentialManager:
     """Returns a CredentialManager instance with a temporary config dir."""
     return CredentialManager(config_dir)
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def account_storage(config_dir: Path) -> AccountStorage:
     """Returns an AccountStorage instance with a temporary config dir."""
     storage = AccountStorage(config_dir)
