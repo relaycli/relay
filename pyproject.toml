@@ -64,7 +64,7 @@ test = [
 ]
 
 [project.scripts]
-relay = "cli.main:app"
+relay = "relay.cli.main:app"
 
 [project.urls]
 homepage = "https://relaycli.com"
@@ -170,7 +170,7 @@ known-third-party = ["typer", "aioimaplib", "pydantic"]
 "**/version.py" = ["CPY001"]
 ".github/**.py" = ["D", "T201", "ANN"]
 "tests/**.py" = ["D103", "CPY001", "S101", "T201", "ANN001", "ANN201", "ANN202", "ARG001", "RUF029", "RUF030", "DTZ003", "PT003", "DOC", "D", "SLF"]
-"cli/**.py" = ["ANN", "BLE001", "DOC"]
+"relay/cli/**.py" = ["ANN", "BLE001", "DOC"]
 "relay/**.py" = ["PT028"]
 
 [tool.ruff.format]
