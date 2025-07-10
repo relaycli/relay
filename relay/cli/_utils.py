@@ -18,7 +18,7 @@ class AliasGroup(TyperGroup):
 
     _CMD_SPLIT_P = re.compile(r" ?[,|] ?")
 
-    def get_command(self, ctx, cmd_name):  # noqa: D102
+    def get_command(self, ctx, cmd_name):
         cmd_name = self._group_cmd_name(cmd_name)
         return super().get_command(ctx, cmd_name)
 
