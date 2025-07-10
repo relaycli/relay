@@ -46,6 +46,8 @@
 - changed-files:
   - any-glob-to-any-file:
     - '**/pyproject.toml'
+    - '**/uv.lock'
+    - '**/Dockerfile'
 
 
 ########################################################
@@ -81,3 +83,13 @@
 ########################################################
 # CLI-specific
 ########################################################
+
+'commands: account':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/cli/commands/account/*
+
+'commands: auth':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/cli/commands/auth/*
