@@ -2,7 +2,7 @@
   <a href="https://relaycli.com"><img src="https://zugjkckdxhiamdlkxfmv.supabase.co/storage/v1/object/public/assets//logo_light.svg" width="75" height="75"></a>
 </p>
 <h1 align="center">
- Relay - Claude Code meets Gmail API
+ Relay - protocol-native CLI for email management
 </h1>
 <p align="center">
   <a href="https://github.com/relaycli/relay">CLI</a> ・
@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/badge/Linter-Ruff-FCC21B?style=flat-square&logo=ruff&logoColor=white" alt="ruff">
   </a>
   <a href="https://github.com/astral-sh/ty">
-    <img src="https://img.shields.io/badge/Typecheck-Ty-261230?style=flat-square&logo=astral&logoColor=white" alt="ruff">
+    <img src="https://img.shields.io/badge/Typecheck-Ty-261230?style=flat-square&logo=astral&logoColor=white" alt="ty">
   </a>
   <a href="https://codecov.io/gh/relaycli/relay">
     <img src="https://img.shields.io/codecov/c/github/relaycli/relay.svg?logo=codecov&style=flat-square&token=48QKJKDCYP" alt="Test coverage percentage">
@@ -36,10 +36,10 @@
 </p>
 <p align="center">
   <a href="https://discord.gg/T4zbT7RcVy">
-    <img src="https://img.shields.io/badge/Discord-Community-5865F2?style=flat-square&logo=discord&logoColor=white" />
+    <img src="https://img.shields.io/badge/Discord-Community-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord">
   </a>
   <a href="https://twitter.com/relaycli">
-    <img src="https://img.shields.io/badge/-@relaycli-1D9BF0?style=flat-square&logo=twitter&logoColor=white" alt="Twitter">
+    <img src="https://img.shields.io/badge/Twitter-@relaycli-1D9BF0?style=flat-square&logo=twitter&logoColor=white" alt="Twitter">
   </a>
 </p>
 
@@ -60,9 +60,7 @@ That's it!
 
 ### Prerequisites
 
-- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [UV](https://docs.astral.sh/uv/getting-started/installation/)
-- [Make](https://www.gnu.org/software/make/) (optional)
 
 ### 30 seconds setup ⏱️
 
