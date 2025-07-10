@@ -26,7 +26,12 @@
   - any-glob-to-any-file:
     - '.vscode/*'
 
-'ext: style':
+'ext: scripts':
+- changed-files:
+  - any-glob-to-any-file:
+    - 'scripts/*'
+
+'topic: style':
 - changed-files:
   - any-glob-to-any-file:
     - '**/.pre-commit-config.yaml'
@@ -40,6 +45,7 @@
     - '**/Makefile'
     - '**/.env.example'
     - '**/*.mdx'
+    - 'docs/*'
 
 # Orchestration
 'func: build':
