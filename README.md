@@ -68,7 +68,7 @@ That's it!
 
 #### 1 - Install the CLI
 ```shell
-uv pip install relaycli
+uv pip install --system relaycli
 ```
 #### 2 - Connect your email account
 ```shell
