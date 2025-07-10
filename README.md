@@ -12,8 +12,8 @@
 <h2 align="center"></h2>
 
 <p align="center">
-  <a href="https://github.com/relaycli/relay/actions?query=workflow%3Aengine">
-    <img alt="CI Status" src="https://img.shields.io/github/actions/workflow/status/relaycli/relay/engine.yml?branch=main&label=CI&logo=github&style=flat-square">
+  <a href="https://github.com/relaycli/relay/actions?query=workflow%3Acore">
+    <img alt="CI Status" src="https://img.shields.io/github/actions/workflow/status/relaycli/relay/core.yml?branch=main&label=CI&logo=github&style=flat-square">
   </a>
   <a href="https://github.com/astral-sh/ruff">
     <img src="https://img.shields.io/badge/Linter-Ruff-FCC21B?style=flat-square&logo=ruff&logoColor=white" alt="ruff">
