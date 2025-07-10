@@ -2,12 +2,16 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Relay",
-  "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+  "appearance": {
+    "default": "dark",
+    "strict": false
   },
-  "favicon": "/logo/dark.svg",
+  "colors": {
+    "primary": "#746ADB",
+    "light": "#8B82E6",
+    "dark": "#5E52B0"
+  },
+  "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
@@ -65,8 +69,8 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg",
+    "light": "/logo/black.svg",
+    "dark": "/logo/white.svg",
     "href": "https://relaycli.com"
   },
   "navbar": {
@@ -92,7 +96,8 @@
     "metatags": {
       "og:title": "Relay",
       "og:description": "Email infrastructure for modern applications"
-    }
+    },
+    "image": "/meta/og.png"
   },
   "contextual": {
     "options": [
