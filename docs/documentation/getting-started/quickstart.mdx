@@ -26,39 +26,37 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
       </Tab>
     </Tabs>
   </Step>
-    <Step title="Install a Python package manager">
+  <Step title="Install the CLI">
     <Tabs>
-      <Tab title="uv">
-        #### Using the standalone installer
+      <Tab title="macOS & Linux">
         <CodeGroup>
-        ```shell title="macOS & Linux"
-        curl -LsSf https://astral.sh/uv/install.sh | sh
+        ```shell title="curl" icon="code"
+        curl -sSL https://github.com/relaycli/relay/releases/download/v0.0.1-alpha.2/install.sh | bash
         ```
-        ```shell title="Windows"
-        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+        ```shell title="wget" icon="code"
+        wget -qO- https://github.com/relaycli/relay/releases/download/v0.0.1-alpha.2/install.sh | bash
+        ```
+        ```shell title="pip" icon="python"
+        pip install relaycli
+        ```
+        ```shell title="uv" icon="python"
+        uv pip install --system relaycli
         ```
         </CodeGroup>
-        #### Using Pypi
-        ```shell
-        pip install uv
-        ```
-
-        If you encounter issues, refer to the [official documentation](https://docs.astral.sh/uv/getting-started/installation).
+        If you encounter issues, please follow the installation steps for either [pip](https://pip.pypa.io/en/stable/installation/) or [uv](https://docs.astral.sh/uv/getting-started/installation) and then run the corresponding installation command.
       </Tab>
-      <Tab title="pip">
-        Follow the [official documentation](https://pip.pypa.io/en/stable/installation/).
+      <Tab title="Windows">
+        <CodeGroup>
+        ```shell title="pip" icon="python"
+        pip install relaycli
+        ```
+        ```shell title="uv" icon="python"
+        uv pip install --system relaycli
+        ```
+        </CodeGroup>
+        If you encounter issues, please follow the installation steps for either [pip](https://pip.pypa.io/en/stable/installation/) or [uv](https://docs.astral.sh/uv/getting-started/installation) and then run the corresponding installation command.
       </Tab>
     </Tabs>
-  </Step>
-  <Step title="Install the CLI">
-    <CodeGroup>
-    ```shell title="uv"
-    uv pip install --system relaycli
-    ```
-    ```shell title="pip" icon="python"
-    pip install relaycli
-    ```
-    </CodeGroup>
   </Step>
   <Step title="Connect the inbox">
     ```shell
@@ -66,18 +64,54 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
     ```
   </Step>
   <Step title="Try out CLI commands">
-    <CodeGroup>
-    ```shell title="fetch recent emails"
-    relay messages ls
-    ```
-    ```shell title="search your inbox"
-    relay messages grep "Pied piper"
-    ```
-    ```shell title="read a specific message"
-    relay messages cat <message_uid>
-    ```
-    </CodeGroup>
+    <Tabs>
+      <Tab title="Fetch recent emails">
+        ```shell
+        relay messages ls
+        ```
+        ```
+        Using account: piedpiper
+                                    Messages from richard@piedpiper.com
+        ┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━┓
+        ┃ UID   ┃ Timestamp                ┃ From                          ┃ Subject    ┃ Snippet    ┃
+        ┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━┩
+        │ 15443 │ 2025-06-23 12:35:44 UTC  │ gilfoyle@piedpiper.com        │ Server     │ The        │
+        │       │                          │                               │ migration  │ migration  │
+        │       │                          │                               │ complete   │ is done... │
+        │ 15467 │ 2025-06-26 12:46:09 UTC  │ dinesh@piedpiper.com          │ RE: My     │ Actually   │
+        │       │                          │                               │ code is    │ Gilfoyle,  │
+        │       │                          │                               │ perfect    │ your cod...│
+        └───────┴──────────────────────────┴───────────────────────────────┴────────────┴────────────┘
+        Showing 2 of 2 unread messages
+        ```
+      </Tab>
+      <Tab title="Search your inbox">
+        ```shell
+        relay messages grep "Gavin Belson"
+        ```
+      </Tab>
+      <Tab title="Read a specific message">
+        ```shell
+        relay messages cat 15467
+        ```
+        ```
+        Using account: piedpiper
 
+        Message Details
+        UID: 15467
+        Timestamp: 2025-06-26 12:46:09 UTC
+        Subject: RE: My code is perfect
+        From: "Dinesh Chugtai" <dinesh@piedpiper.com>
+        To: richard@piedpiper.com
+
+        Message Body:
+        Actually Gilfoyle, your code has a memory leak in the compression algorithm.
+        I've already fixed it. You're welcome.
+
+        No attachments
+        ```
+      </Tab>
+    </Tabs>
   </Step>
   <Step title="Make something cool">
     Now it's your turn!

@@ -48,12 +48,81 @@ Relay helps builds create apps on email workflows. See it as a crossover between
 
 ## Quick Tour
 
-### Fetching your emails
+### Fetching your unread emails
 
 ```shell
-relay messages ls
+relay messages ls --limit 10 --unread
 ```
-That's it!
+```
+Using account: piedpiper
+                            Messages from richard@piedpiper.com
+┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━┓
+┃ UID   ┃ Timestamp                ┃ From                          ┃ Subject    ┃ Snippet    ┃
+┡━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━┩
+│ 15443 │ 2025-06-23 12:35:44 UTC  │ gilfoyle@piedpiper.com        │ Server     │ The        │
+│       │                          │                               │ migration  │ migration  │
+│       │                          │                               │ complete   │ is done... │
+│ 15467 │ 2025-06-26 12:46:09 UTC  │ dinesh@piedpiper.com          │ RE: My     │ Actually   │
+│       │                          │                               │ code is    │ Gilfoyle,  │
+│       │                          │                               │ perfect    │ your cod...│
+│ 15555 │ 2025-07-08 15:46:27 UTC  │ jared@piedpiper.com           │ Team       │ Hi guys!   │
+│       │                          │                               │ building   │ I've       │
+│       │                          │                               │ retreat    │ organized..│
+│ 15587 │ 2025-07-10 13:34:48 UTC  │ monica@raviga.com             │ Q3         │ Richard,   │
+│       │                          │                               │ metrics    │ we need to │
+│       │                          │                               │ review     │ discuss... │
+│ 15588 │ 2025-07-10 14:22:49 UTC  │ gavin@hooli.com               │ Acquisition│ Pied Piper │
+│       │                          │                               │ offer      │ team, I'm  │
+│       │                          │                               │            │ prepared...│
+└───────┴──────────────────────────┴───────────────────────────────┴────────────┴────────────┘
+Showing 5 of 5 unread messages
+```
+
+### Reading email details
+
+```shell
+relay messages cat 15443
+```
+```
+Using account: piedpiper
+
+Message Details
+UID: 15443
+Timestamp: 2025-06-23 12:35:44 UTC
+Subject: Server migration complete
+From: "Bertram Gilfoyle" <gilfoyle@piedpiper.com>
+To: richard@piedpiper.com
+CC: dinesh@piedpiper.com, jared@piedpiper.com
+BCC: N/A
+
+Message Body:
+The migration is done. Obviously.
+
+While you were all probably panicking about downtime (which never happened), 
+I successfully migrated our entire server infrastructure to the new data center.
+
+Key accomplishments:
+- Migrated 47 servers in 3.2 hours
+- Implemented redundant failsafes
+- Optimized database queries by 340%
+- Fixed 23 security vulnerabilities
+
+Richard, the system is now running at 99.97% efficiency. The remaining 0.03% 
+is due to the laws of physics, which even I cannot override.
+
+Dinesh, I've documented everything in a way that even you might comprehend, 
+though I make no guarantees.
+
+The servers are purring like a well-fed cat. You may now return to your 
+regularly scheduled mediocrity.
+
+--
+Bertram Gilfoyle
+Senior Systems Architect
+Pied Piper Inc.
+
+No attachments
+```
 
 
 ## Get started 🚀
@@ -66,7 +135,7 @@ That's it!
 
 #### 1 - Install the CLI
 ```shell
-uv pip install --system relaycli
+pip install relaycli
 ```
 #### 2 - Connect your email account
 ```shell
