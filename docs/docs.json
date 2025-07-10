@@ -109,5 +109,11 @@
   },
   "fonts": {
     "family": "Geist Mono"
-  }
+  },
+  "integrations": {
+    "posthog": {
+        "apiKey": "phc_KM92OpgE50LK7fNerCe2JOq8KaSJeWRKfgpY2L9it5i",
+        "apiHost": "https://eu.i.posthog.com"
+    }
+}
 }

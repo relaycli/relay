@@ -11,17 +11,14 @@ This is a thorough description of technology choices for the project. We want to
 ## General
 - Makefile
 
-## Backend API
+## Core library
 - Python 3.11+
 - Pydantic for model validation
+- Typer for the CLI
 - uv for dependency management
 - ty for type checking
 - ruff for code styling & format
 - pytest as testing framework
-
-
-## CLI
-- Typer
 
 ## Documentation
 - Mintlify
