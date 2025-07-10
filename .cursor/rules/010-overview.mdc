@@ -29,9 +29,3 @@ This project's goal is to enable builders to create email-based apps
 
 ### Documentation
 - Fast track the installation, usage and contribution of users
-
-### Backend API
-- Allow users to host online a REST API to develop email-based services
-- Handle user authentication (OAuth 2 using JWT as bearer tokens)
-- Handle OAuth connections (Google account)
-- Enable the fetching and labeling of emails (metadata in relational database + image/video in storage)

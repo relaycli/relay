@@ -10,21 +10,34 @@ The codebase includes several applications with separate tech stacks and folders
 
 - `.github/`: GitHub CI configuration
 - `.cursor/rules`: rules for coding assistants
+- `.vscode`: IDE settings
 - `./relay`: core library for email management
-- `./cli`: CLI for email management
-- [Makefile](mdc:Makefile) high-level project commands
+- `./tests`: test suite
+- `./docs`: project documentation
+- [Makefile](mdc:Makefile): high-level project commands
 - [.pre-commit-config.yaml](mdc:.pre-commit-config.yaml): pre-commit configuration file
 - [pyproject.toml](mdc:pyproject.toml): project configuration file
+- [uv.lock](mdc:uv.lock): lockfile for the Docker orchestration
+- [Dockerfile](mdc:Dockerfile): dockerfile
+- [README.md](mdc:README.md): readme
+- [CONTRIBUTING.md](mdc:CONTRIBUTING.md): contribution guide
+- [CODE_OF_CONDUCT.md](mdc:CODE_OF_CONDUCT.md): code of conduct
+- [LICENSE](mdc:LICENSE): license copy
 
 ## Core library
 The core library is a Python library + CLI for sync and async email operations, organized as follows:
-- [client.py](mdc:relay/client.py): main entry point
-- [config.py](mdc:relay/config.py): configuration management
 - [exceptions.py](mdc:relay/exceptions.py): SDK-specific exceptions
+- `auth/`: authentication system (creds, oauth flow, secure storage)
+    - [account.py](mdc:relay/auth/account.py): email account management
+    - [credentials.py](mdc:relay/auth/credentials.py): credentials management
+    - [storage.py](mdc:relay/auth/storage.py): storage management
 - `models/`: data models (translatable to other languages)
 - `providers/`: email provider implementations
-    - `gmail/`: Gmail connection
-    - `outlook/`: Outlook connection
-    - `imap/`: IMAP connection
-    - `smtp/`: SMTP connection
-- `auth/`: authentication system (creds, oauth flow, secure storage)
+    - [imap.py](mdc:relay/providers/imap.py): IMAP connection
+    - [smtp.py](mdc:relay/providers/smtp.py): SMTP connection
+    - [utils.py](mdc:relay/providers/utils.py): utilities
+- `cli/`: CLI
+    - [main.py](mdc:relay/cli/main.py): Typer app definition
+    - `commands/`
+        - [account.py](mdc:relay/cli/commands/account.py): account related commands
+        - [messages.py](mdc:relay/cli/commands/messages.py): messages related commands
