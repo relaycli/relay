@@ -51,9 +51,8 @@ Relay helps builds create apps on email workflows. See it as a crossover between
 ### Fetching your unread emails
 
 ```shell
-relay messages ls --limit 10 --unread
-```
-```
+$ relay messages ls --limit 10 --unread
+
 Using account: piedpiper
                             Messages from richard@piedpiper.com
 ┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━┓
@@ -81,9 +80,8 @@ Showing 5 of 5 unread messages
 ### Reading email details
 
 ```shell
-relay messages cat 15443
-```
-```
+$ relay messages cat 15443
+
 Using account: piedpiper
 
 Message Details
@@ -146,7 +144,24 @@ Follow the instructions to connect your email account.
 #### 3 - Play with the CLI
 
 ```shell
-relay messages ls
+$ relay messages --help
+
+ Usage: relay messages [OPTIONS] COMMAND [ARGS]...
+
+ Email message commands
+
+
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────╮
+│ --help          Show this message and exit.                                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ─────────────────────────────────────────────────────────────────────────────────╮
+│ list | ls              List recent emails from specified account.                          │
+│ open | cat             Read a single email message by UID.                                 │
+│ search | find | grep   Search for messages containing the specified query.                 │
+│ trash | rm             Move a message to trash.                                            │
+│ spam                   Mark a message as spam.                                             │
+│ mark                   Mark a message as read or unread.                                   │
+╰────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 ## Contributing
