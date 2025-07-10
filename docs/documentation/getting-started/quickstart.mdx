@@ -3,7 +3,7 @@ title: 'Quickstart'
 description: 'From zero to "Hello inbox" in under 5 minutes'
 ---
 
-## Build your first e-mail app (hosted cloud)
+## Manage your emails in your console
 
 <Steps>
   <Step title="Grab your mailbox credentials">
@@ -26,10 +26,34 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
       </Tab>
     </Tabs>
   </Step>
+    <Step title="Install a Python package manager">
+    <Tabs>
+      <Tab title="uv">
+        #### Using the standalone installer
+        <CodeGroup>
+        ```shell title="macOS & Linux"
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        ```
+        ```shell title="Windows"
+        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+        ```
+        </CodeGroup>
+        #### Using Pypi
+        ```shell
+        pip install uv
+        ```
+        
+        If you encounter issues, refer to the [official documentation](https://docs.astral.sh/uv/getting-started/installation).
+      </Tab>
+      <Tab title="pip">
+        Follow the [official documentation](https://pip.pypa.io/en/stable/installation/).
+      </Tab>
+    </Tabs>
+  </Step>
   <Step title="Install the CLI">
     <CodeGroup>
-    ```shell title="uv" icon="python"
-    uv pip install relaycli
+    ```shell title="uv"
+    uv pip install --system relaycli
     ```
     ```shell title="pip" icon="python"
     pip install relaycli
@@ -55,7 +79,7 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
     </CodeGroup>
 
   </Step>
-  <Step title="Build an email digest (optional)">
-    Now it's your turn!.
+  <Step title="Make something cool">
+    Now it's your turn!
   </Step>
 </Steps>

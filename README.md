@@ -22,7 +22,7 @@
     <img src="https://img.shields.io/badge/Typecheck-Ty-261230?style=flat-square&logo=astral&logoColor=white" alt="ruff">
   </a>
   <a href="https://codecov.io/gh/relaycli/relay">
-    <img src="https://img.shields.io/codecov/c/github/relaycli/relay.svg?logo=codecov&style=flat-square&token=fkT0jQefhO" alt="Test coverage percentage">
+    <img src="https://img.shields.io/codecov/c/github/relaycli/relay.svg?logo=codecov&style=flat-square&token=48QKJKDCYP" alt="Test coverage percentage">
   </a>
 </p>
 <p align="center">
@@ -68,7 +68,7 @@ That's it!
 
 #### 1 - Install the CLI
 ```shell
-uv pip install relaycli
+uv pip install --system relaycli
 ```
 #### 2 - Connect your email account
 ```shell
@@ -96,4 +96,4 @@ Copyright (C) 2025, Relay.
 This program is licensed under the Apache License 2.0.
 See LICENSE or go to <https://www.apache.org/licenses/LICENSE-2.0> for full license details.
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frelaycli%2Fcontribution-api.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Frelaycli%2Frelay?ref=badge_large&issueType=license)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frelaycli%2Frelay.svg?type=large&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Frelaycli%2Frelay?ref=badge_large&issueType=license)
