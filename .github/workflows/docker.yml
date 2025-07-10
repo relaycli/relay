@@ -33,7 +33,7 @@ jobs:
       - name: Build & test the docker image
         run: |
           make docker
-          docker run -it ghcr.io/${{ github.repository }}:latest relay --help
+          docker run -i ghcr.io/${{ github.repository }}:latest relay --help
 
   publish:
     if: github.event_name == 'push'
