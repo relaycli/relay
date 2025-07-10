@@ -129,7 +129,7 @@ No attachments
 
 - [UV](https://docs.astral.sh/uv/getting-started/installation/)
 
-### 30 seconds setup ⏱️
+### 30 seconds setup ⏱️ ([docs](https://docs.relaycli.com/documentation/getting-started/quickstart))
 
 #### 1 - Install the CLI
 ```shell
