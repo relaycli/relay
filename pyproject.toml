@@ -12,14 +12,14 @@ authors = [{ name = "Relay team", email = "support@relaycli.com" }]
 readme = "README.md"
 keywords = ["cli", "imap", "smtp", "gmail", "outlook", "email", "inbox"]
 dependencies = [
+    "typer>=0.16.0,<1.0.0",
+    "rich>=13.0.0,<14.0.0",
+    "questionary>=2.0.0,<3.0.0",
     "pydantic>=2.10.0,<3.0.0",
     "email-validator>=2.0.0,<3.0.0",
     "cryptography>=44.0.0,<46.0.0",
     "beautifulsoup4>=4.12.3,<5.0.0",
     "html2text>=2025.4.15",
-    "typer>=0.16.0,<1.0.0",
-    "rich>=13.0.0,<14.0.0",
-    "questionary>=2.0.0,<3.0.0",
 ]
 classifiers = [
     # https://pypi.org/classifiers/
@@ -57,14 +57,14 @@ quality = [
     "pre-commit==4.2.0",
 ]
 test = [
-    "pytest>=8.3.3,<9.0.0",
-    "pytest-cov>=6.0.0,<7.0.0",
-    "pytest-pretty>=1.0.0,<2.0.0",
-    "pytest-mock>=3.14.1,<4.0.0",
+    "pytest==8.4.1",
+    "pytest-cov==6.2.1",
+    "pytest-pretty==1.3.0",
+    "pytest-mock==3.14.1",
 ]
 
 [project.scripts]
-relay = "cli.main:app"
+relay = "relay.cli.main:app"
 
 [project.urls]
 homepage = "https://relaycli.com"
@@ -170,7 +170,7 @@ known-third-party = ["typer", "aioimaplib", "pydantic"]
 "**/version.py" = ["CPY001"]
 ".github/**.py" = ["D", "T201", "ANN"]
 "tests/**.py" = ["D103", "CPY001", "S101", "T201", "ANN001", "ANN201", "ANN202", "ARG001", "RUF029", "RUF030", "DTZ003", "PT003", "DOC", "D", "SLF"]
-"cli/**.py" = ["ANN", "BLE001", "DOC"]
+"relay/cli/**.py" = ["ANN", "BLE001", "DOC"]
 "relay/**.py" = ["PT028"]
 
 [tool.ruff.format]

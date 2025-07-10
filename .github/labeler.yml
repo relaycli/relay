@@ -5,7 +5,7 @@
 
 'service: cli':
 - changed-files:
-  - any-glob-to-any-file: cli/*
+  - any-glob-to-any-file: relay/cli/*
 
 'service: docs':
 - changed-files:
@@ -46,6 +46,8 @@
 - changed-files:
   - any-glob-to-any-file:
     - '**/pyproject.toml'
+    - '**/uv.lock'
+    - '**/Dockerfile'
 
 
 ########################################################
@@ -67,16 +69,6 @@
   - any-glob-to-any-file:
     - relay/providers/*
 
-'module: client':
-- changed-files:
-  - any-glob-to-any-file:
-    - relay/client.py
-
-'module: config':
-- changed-files:
-  - any-glob-to-any-file:
-    - relay/config.py
-
 'module: exceptions':
 - changed-files:
   - any-glob-to-any-file:
@@ -91,3 +83,13 @@
 ########################################################
 # CLI-specific
 ########################################################
+
+'commands: account':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/cli/commands/account/*
+
+'commands: auth':
+- changed-files:
+  - any-glob-to-any-file:
+    - relay/cli/commands/auth/*

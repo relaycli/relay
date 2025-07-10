@@ -3,9 +3,13 @@ PACKAGE_DIR = ${ENGINE_DIR}/relay
 CLI_DIR = ./cli
 DOCS_DIR = ./docs
 PYPROJECT_CONFIG_FILE = ${ENGINE_DIR}/pyproject.toml
+DOCKERFILE = ${ENGINE_DIR}/Dockerfile
 PYTHON_REQ_FILE = /tmp/requirements.txt
 REPO_OWNER ?= relaycli
 REPO_NAME ?= relay
+DOCKER_NAMESPACE ?= ghcr.io/${REPO_OWNER}
+DOCKER_TAG ?= latest
+DOCKER_PLATFORM ?= linux/amd64
 
 .PHONY: help install install-quality lint-check lint-format precommit typing-check deps-check quality style init-gh-labels init-gh-settings install-mintlify start-mintlify
 
@@ -57,6 +61,20 @@ build: ${PYPROJECT_CONFIG_FILE} ## Build the package
 
 publish: ${ENGINE_DIR} ## Publish the package to PyPI
 	uv publish
+
+lock: ${PYPROJECT_CONFIG_FILE}
+	uv lock --project ${ENGINE_DIR}
+
+docker: ${DOCKERFILE}
+	docker buildx build --platform ${DOCKER_PLATFORM} -f ${DOCKERFILE} -t ${DOCKER_NAMESPACE}/${REPO_NAME}:${DOCKER_TAG} ${ENGINE_DIR}
+
+# Docker login
+docker-login:
+	$(eval PAT := $(shell gh auth token))
+	echo "${PAT}" | docker login ghcr.io -u ${REPO_OWNER} --password-stdin
+
+docker-push: docker
+	docker push ${DOCKER_NAMESPACE}/${REPO_NAME}:${DOCKER_TAG}
 
 ########################################################
 # Tests

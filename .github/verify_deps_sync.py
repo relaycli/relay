@@ -11,12 +11,14 @@
 # ///
 
 import logging
+import re
 import sys
 import tomllib
 from pathlib import Path
 
 import yaml
 
+DOCKERFILES = ["./Dockerfile"]
 PRECOMMIT_CONFIG = ".pre-commit-config.yaml"
 PYPROJECT_PATH = "./pyproject.toml"
 
@@ -31,6 +33,11 @@ logger.addHandler(stream_handler)
 def main():
     # Retrieve & parse all deps files
     deps_dict = {"uv": [], "ruff": [], "ty": []}
+    # Parse dockerfiles
+    for dockerfile in DOCKERFILES:
+        dockerfile_content_ = Path(dockerfile).read_text(encoding="utf-8")
+        uv_version = re.search(r"ghcr\.io/astral-sh/uv:(\d+\.\d+\.\d+)", dockerfile_content_).group(1)  # ty: ignore[possibly-unbound-attribute]
+        deps_dict["uv"].append({"file": dockerfile, "version": uv_version})
     # Parse precommit
     with Path(PRECOMMIT_CONFIG).open("r", encoding="utf-8") as f:
         precommit = yaml.safe_load(f)

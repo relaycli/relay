@@ -1,0 +1,75 @@
+name: docker
+
+on:
+  push:
+    branches: main
+    paths:
+      - '.github/workflows/docker.yml'
+      - 'relay/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'README.md'
+      - 'LICENSE'
+      - 'Dockerfile'
+  pull_request:
+    branches: main
+    paths:
+      - '.github/workflows/docker.yml'
+      - 'relay/**'
+      - 'pyproject.toml'
+      - 'uv.lock'
+      - 'README.md'
+      - 'LICENSE'
+      - 'Dockerfile'
+  release:
+    types: [published]
+
+jobs:
+  build:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build & test the docker image
+        run: |
+          make docker
+          docker run -i ghcr.io/${{ github.repository }}:latest relay --help
+
+  publish:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Generate metadata
+        id: meta
+        run: |
+          echo "date=$(date -u +"%Y-%m-%dT%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "commit=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "version=$(grep -E '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')" >> $GITHUB_OUTPUT
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: .
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.date }}
+            ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.commit }}
+            ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.version }}
+          labels: |
+            org.opencontainers.image.created=${{ steps.meta.outputs.date }}
+            org.opencontainers.image.revision=${{ steps.meta.outputs.commit }}
+            org.opencontainers.image.version=${{ steps.meta.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
