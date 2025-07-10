@@ -19,7 +19,7 @@ from relay.auth.account import AccountManager
 from relay.exceptions import AccountNotFoundError, AuthenticationError, ServerConnectionError, ValidationError
 from relay.models.message import MessageSummary
 
-from ..utils import AliasGroup, create_messages_table
+from .._utils import AliasGroup, create_messages_table
 
 console = Console()
 app = typer.Typer(help="Email message commands", cls=AliasGroup)

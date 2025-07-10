@@ -25,7 +25,7 @@ from relay.exceptions import (
 from relay.models.account import PROVIDER_CONFIGS, AccountCreate, EmailProvider
 from relay.providers.utils import resolve_provider
 
-from ..utils import AliasGroup, create_accounts_table
+from .._utils import AliasGroup, create_accounts_table
 
 console = Console()
 app = typer.Typer(help="Account management commands", cls=AliasGroup)
