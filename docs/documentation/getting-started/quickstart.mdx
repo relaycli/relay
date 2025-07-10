@@ -67,7 +67,7 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
     <Tabs>
       <Tab title="Fetch recent emails">
         ```shell
-        relay messages ls
+        relay messages ls --unread
         ```
         ```
         Using account: piedpiper
@@ -87,14 +87,61 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
       </Tab>
       <Tab title="Search your inbox">
         ```shell
-        relay messages grep "Gavin Belson"
+        relay messages grep "Son of Anton"
+        ```
+        ```console wrap
+        Using account: piedpiper
+        No messages found containing 'Son of Anton'
         ```
       </Tab>
       <Tab title="Read a specific message">
         ```shell
+        relay messages cat 15443
+        ```
+        ```console wrap expandable
+        Using account: piedpiper
+
+        Message Details
+        UID: 15443
+        Timestamp: 2025-06-23 12:35:44 UTC
+        Subject: Server migration complete
+        From: "Bertram Gilfoyle" <gilfoyle@piedpiper.com>
+        To: richard@piedpiper.com
+        CC: dinesh@piedpiper.com, jared@piedpiper.com
+        BCC: N/A
+
+        Message Body:
+        The migration is done. Obviously.
+
+        While you were all probably panicking about downtime (which never happened), 
+        I successfully migrated our entire server infrastructure to the new data center.
+
+        Key accomplishments:
+        - Migrated 47 servers in 3.2 hours
+        - Implemented redundant failsafes
+        - Optimized database queries by 340%
+        - Fixed 23 security vulnerabilities
+
+        Richard, the system is now running at 99.97% efficiency. The remaining 0.03% 
+        is due to the laws of physics, which even I cannot override.
+
+        Dinesh, I've documented everything in a way that even you might comprehend, 
+        though I make no guarantees.
+
+        The servers are purring like a well-fed cat. You may now return to your 
+        regularly scheduled mediocrity.
+
+        --
+        Bertram Gilfoyle
+        Senior Systems Architect
+        Pied Piper Inc.
+
+        No attachments
+        ```
+        ```shell
         relay messages cat 15467
         ```
-        ```
+        ```console wrap expandable
         Using account: piedpiper
 
         Message Details
