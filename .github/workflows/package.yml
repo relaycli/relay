@@ -27,7 +27,7 @@ env:
 
 jobs:
   install:
-    if: github.event_name == 'pull_request'
+    if: github.event_name != 'release'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -131,6 +131,7 @@ jobs:
 
   build:
     if: github.event_name != 'release'
+    needs: install
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
