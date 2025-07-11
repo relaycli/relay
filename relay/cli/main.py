@@ -10,7 +10,7 @@ from rich.console import Console
 
 import relay
 
-from .commands.account import app as account_app
+from .commands.accounts import app as account_app
 from .commands.messages import app as messages_app
 
 console = Console()
@@ -21,7 +21,7 @@ app = typer.Typer(
 )
 
 # Add subcommands
-app.add_typer(account_app, name="account")
+app.add_typer(account_app, name="accounts")
 app.add_typer(messages_app, name="messages")
 
 

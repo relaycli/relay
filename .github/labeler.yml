@@ -90,12 +90,12 @@
 # CLI-specific
 ########################################################
 
-'commands: account':
+'commands: accounts':
 - changed-files:
   - any-glob-to-any-file:
     - relay/cli/commands/account/*
 
-'commands: auth':
+'commands: messages':
 - changed-files:
   - any-glob-to-any-file:
-    - relay/cli/commands/auth/*
+    - relay/cli/commands/messages/*
