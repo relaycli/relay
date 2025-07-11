@@ -14,7 +14,7 @@ from relay.providers.smtp import SMTPClient
 
 
 @pytest.mark.parametrize(
-    "email_address,provider,smtp_server,expected_server,expected_provider",
+    ("email_address", "provider", "smtp_server", "expected_server", "expected_provider"),
     [
         # Gmail provider detection by email
         ("user@gmail.com", None, None, "smtp.gmail.com", EmailProvider.GMAIL),
@@ -55,7 +55,7 @@ def test_smtp_client_init_parametrized(
 
 
 @pytest.mark.parametrize(
-    "email_address,provider,smtp_server,expected_error",
+    ("email_address", "provider", "smtp_server", "expected_error"),
     [
         # Invalid email address
         ("invalid-email", None, None, ValueError),
@@ -241,10 +241,10 @@ def test_password_ascii_encoding_fix(mocker: MockerFixture):
     mock_smtp_instance.user = "sender@gmail.com"
 
     # Password with non-breaking space character
-    password_with_nbsp = "password\xa0with\xa0nbsp"
-    expected_cleaned_password = "password with nbsp"
+    password_with_nbsp = "password\xa0with\xa0nbsp"  # noqa: S105
+    expected_cleaned_password = "password with nbsp"  # noqa: S105
 
-    client = SMTPClient("sender@gmail.com", password_with_nbsp)
+    SMTPClient("sender@gmail.com", password_with_nbsp)
 
     # Verify the password was cleaned before being passed to login
     mock_smtp_instance.login.assert_called_once_with("sender@gmail.com", expected_cleaned_password)

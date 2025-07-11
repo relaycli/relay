@@ -54,7 +54,7 @@ def multipart_email() -> EmailMessage:
 
 
 @pytest.mark.parametrize(
-    "email_address,provider,imap_server,expected_server,expected_provider",
+    ("email_address", "provider", "imap_server", "expected_server", "expected_provider"),
     [
         # Gmail provider detection by email
         ("user@gmail.com", None, None, "imap.gmail.com", EmailProvider.GMAIL),
@@ -96,7 +96,7 @@ def test_imap_client_init_parametrized(
 
 
 @pytest.mark.parametrize(
-    "email_address,provider,imap_server,expected_error",
+    ("email_address", "provider", "imap_server", "expected_error"),
     [
         # Invalid email address
         ("invalid-email", None, None, ValueError),
@@ -217,7 +217,7 @@ def test_parse_email_parts_multipart(multipart_email: EmailMessage):
 
 
 @pytest.mark.parametrize(
-    "email_headers,expected_thread_id",
+    ("email_headers", "expected_thread_id"),
     [
         # With References
         (
@@ -247,7 +247,7 @@ def test_parse_html_body():
 
 
 @pytest.mark.parametrize(
-    "input_text,expected_contains,expected_not_contains",
+    ("input_text", "expected_contains", "expected_not_contains"),
     [
         # Standard quoted reply
         (
