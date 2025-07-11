@@ -27,12 +27,15 @@ env:
 
 jobs:
   install:
-    if: github.event_name != 'release'
+    if: github.event_name == 'pull_request'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: ['3.10', '3.11', '3.12', '3.13']
+        exclude:
+          - os: macos-latest
+            python: '3.10'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -130,13 +133,16 @@ jobs:
           fail_ci_if_error: true
 
   build:
-    if: github.event_name != 'release'
+    if: github.event_name == 'pull_request'
     needs: install
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: ['3.10', '3.11', '3.12', '3.13']
+        exclude:
+          - os: macos-latest
+            python: '3.10'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -189,6 +195,9 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: ['3.10', '3.11', '3.12', '3.13']
+        exclude:
+          - os: macos-latest
+            python: '3.10'
     needs: publish
     steps:
       - uses: actions/setup-python@v5
