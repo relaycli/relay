@@ -71,13 +71,14 @@ class IMAPClient:
             if provider is None:
                 if imap_server is None:
                     raise ValueError("Either specify a provider or IMAP server address")
-                provider = IMAP_TO_PROVIDER.get(imap_server)
-            if provider is None:
-                raise ValueError("Could not resolve provider, please specify a provider")
+                provider = IMAP_TO_PROVIDER.get(imap_server, EmailProvider.CUSTOM)
 
         # Convert string provider to EmailProvider enum
         if isinstance(provider, str):
             provider = EmailProvider(provider)
+
+        if provider == EmailProvider.CUSTOM and imap_server is None:
+            raise ValueError("For custom provider, please specify a IMAP server address")
 
         imap_server = imap_server or PROVIDER_INFO[provider]["imap"]["server"]
         imap_port = imap_port or PROVIDER_INFO[provider]["imap"]["port"]
@@ -401,12 +402,14 @@ def parse_email_parts(email_message: EmailMessage, include_quoted_body: bool = F
                 body_html = part.get_payload(decode=True).decode("utf-8", errors="ignore")
             # Parse attachments
             if isinstance(part.get_content_disposition(), str) and part.get_content_disposition() == "attachment":
-                attachments.append({
-                    "filename": part.get_filename(),
-                    "content_type": part.get_content_type(),
-                    "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
-                    "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
-                })
+                attachments.append(
+                    {
+                        "filename": part.get_filename(),
+                        "content_type": part.get_content_type(),
+                        "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
+                        "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
+                    }
+                )
     else:
         body_plain = email_message.get_payload(decode=True).decode("utf-8", errors="ignore")
 

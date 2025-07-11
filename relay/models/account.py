@@ -42,16 +42,16 @@ class AccountCreate(AccountBase):
         # Auto-detect provider from email if not set
         if "provider" not in data or data["provider"] == "custom":
             email = data.get("email", "")
-            data["provider"] = EMAIL_TO_PROVIDER[email.rpartition("@")[-1].lower()]
+            data["provider"] = EMAIL_TO_PROVIDER.get(email.rpartition("@")[-1].lower(), EmailProvider.CUSTOM)
 
         # Auto-fill server settings based on provider
         provider = data.get("provider", EmailProvider.CUSTOM)
         if isinstance(provider, str):
             provider = EmailProvider(provider)
 
-        if provider in PROVIDER_INFO and not data.get("imap_server"):
+        if provider in PROVIDER_INFO and not data.get("imap_server") and provider != EmailProvider.CUSTOM:
             data["imap_server"] = PROVIDER_INFO[provider]["imap"]["server"]
-        if provider in PROVIDER_INFO and not data.get("imap_port"):
+        if provider in PROVIDER_INFO and not data.get("imap_port") and provider != EmailProvider.CUSTOM:
             data["imap_port"] = PROVIDER_INFO[provider]["imap"]["port"]
 
         super().__init__(**data)

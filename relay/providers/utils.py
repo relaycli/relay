@@ -88,11 +88,20 @@ PROVIDER_INFO = {
             "drafts": "Drafts",
         },
     },
+    EmailProvider.CUSTOM: {
+        "folders": {
+            "inbox": "INBOX",
+            "trash": "Trash",
+            "spam": "Junk",
+            "sent": "Sent",
+            "drafts": "Drafts",
+        },
+    },
 }
 
 IMAP_TO_PROVIDER: dict[str, EmailProvider] = {
-    config["imap"]["server"]: provider for provider, config in PROVIDER_INFO.items()
+    config["imap"]["server"]: provider for provider, config in PROVIDER_INFO.items() if provider != EmailProvider.CUSTOM
 }
 SMTP_TO_PROVIDER: dict[str, EmailProvider] = {
-    config["smtp"]["server"]: provider for provider, config in PROVIDER_INFO.items()
+    config["smtp"]["server"]: provider for provider, config in PROVIDER_INFO.items() if provider != EmailProvider.CUSTOM
 }
