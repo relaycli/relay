@@ -1,22 +1,22 @@
-name: core
+name: package
 
 on:
   push:
     branches: main
     paths:
+      - '.github/workflows/package.yml'
       - 'relay/**'
-      - 'cli/**'
+      - 'tests/**'
       - 'pyproject.toml'
       - 'Makefile'
-      - '.github/workflows/core.yml'
   pull_request:
     branches: main
     paths:
+      - '.github/workflows/package.yml'
       - 'relay/**'
-      - 'cli/**'
+      - 'tests/**'
       - 'pyproject.toml'
       - 'Makefile'
-      - '.github/workflows/core.yml'
   release:
     types: [published]
 
@@ -28,12 +28,16 @@ env:
 jobs:
   install:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.10', '3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ matrix.python }}
           architecture: x64
       - uses: astral-sh/setup-uv@v6
         with:
@@ -127,12 +131,16 @@ jobs:
 
   build:
     if: github.event_name != 'release'
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.10', '3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ matrix.python }}
           architecture: x64
       - uses: astral-sh/setup-uv@v6
         with:
@@ -170,20 +178,21 @@ jobs:
           echo "package_version=${BUILD_VERSION}" >> $GITHUB_OUTPUT
           echo "BUILD_VERSION=${BUILD_VERSION}" >> $GITHUB_ENV
       - name: Publish to PyPI
-        env:
-          UV_PUBLISH_USERNAME: __token__
-          UV_PUBLISH_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           make set-version
           make build && make publish
 
   verify-publish:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.10', '3.11', '3.12', '3.13']
     needs: publish
     steps:
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ matrix.python }}
           architecture: x64
       - uses: astral-sh/setup-uv@v6
         with:
