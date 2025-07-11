@@ -31,21 +31,7 @@ SORTING_HEADERS = {"List-Unsubscribe", "List-Id", "Precedence", "Auto-Submitted"
 
 
 class IMAPClient:
-    """IMAP client for managing emails.
-
-    Args:
-        email_address: Email address
-        password: Password
-        provider: Email provider
-        imap_server: IMAP server address
-        imap_port: IMAP port
-        kwargs: Additional IMAP parameters
-
-    Raises:
-        ServerConnectionError: If IMAP server is not found
-        AuthenticationError: If IMAP credentials are invalid
-        ValueError: If there are missing information
-    """
+    """IMAP client for managing emails."""
 
     def __init__(
         self,
@@ -56,7 +42,21 @@ class IMAPClient:
         imap_port: int = 993,
         **kwargs,
     ) -> None:
-        """Initialize the IMAP client."""
+        """Initialize the IMAP client.
+
+        Args:
+            email_address: Email address
+            password: Password
+            provider: Email provider
+            imap_server: IMAP server address
+            imap_port: IMAP port
+            kwargs: Additional IMAP parameters
+
+        Raises:
+            ServerConnectionError: If IMAP server is not found
+            AuthenticationError: If IMAP credentials are invalid
+            ValueError: If there are missing information
+        """
         # Validate email format
         try:
             validate_email(email_address, check_deliverability=False)
@@ -401,14 +401,12 @@ def parse_email_parts(email_message: EmailMessage, include_quoted_body: bool = F
                 body_html = part.get_payload(decode=True).decode("utf-8", errors="ignore")
             # Parse attachments
             if isinstance(part.get_content_disposition(), str) and part.get_content_disposition() == "attachment":
-                attachments.append(
-                    {
-                        "filename": part.get_filename(),
-                        "content_type": part.get_content_type(),
-                        "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
-                        "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
-                    }
-                )
+                attachments.append({
+                    "filename": part.get_filename(),
+                    "content_type": part.get_content_type(),
+                    "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
+                    "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
+                })
     else:
         body_plain = email_message.get_payload(decode=True).decode("utf-8", errors="ignore")
 

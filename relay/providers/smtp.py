@@ -17,20 +17,7 @@ __all__ = ["SMTPClient"]
 
 
 class SMTPClient:
-    """SMTP client for sending emails.
-
-    Args:
-        smtp_server: SMTP server address
-        email_address: Email address
-        password: Password
-        smtp_port: SMTP port
-        sender_name: Sender name
-        provider: Email provider
-        kwargs: Additional SMTP parameters
-
-    Raises:
-        AuthenticationError: If SMTP credentials are invalid
-    """
+    """SMTP client for sending emails."""
 
     def __init__(
         self,
@@ -42,7 +29,21 @@ class SMTPClient:
         sender_name: str | None = None,
         **kwargs,
     ) -> None:
-        """Initialize the SMTP client."""
+        """Initialize the SMTP client.
+
+        Args:
+            email_address: Email address
+            password: Password
+            provider: Email provider
+            smtp_server: SMTP server address
+            smtp_port: SMTP port
+            sender_name: Sender name
+            kwargs: Additional SMTP parameters
+
+        Raises:
+            AuthenticationError: If SMTP credentials are invalid
+            ValueError: If there are missing information
+        """
         # Validate email format
         try:
             validate_email(email_address, check_deliverability=False)
