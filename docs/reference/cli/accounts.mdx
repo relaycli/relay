@@ -89,10 +89,10 @@ For Gmail, you'll need to use an App Password instead of your regular password. 
 Display all configured email accounts in a formatted table.
 
 ```shell
-relay account list
+relay accounts list
 ```
 
-**Alias:** `relay account ls`
+**Alias:** `relay accounts ls`
 
 The output shows:
 - Account name
@@ -112,7 +112,7 @@ Remove an account and its stored credentials from your system.
 <Tabs>
 <Tab title="With Confirmation">
 ```shell
-relay account remove work
+relay accounts remove work
 ```
 
 The CLI will ask for confirmation before removing the account.
@@ -120,7 +120,7 @@ The CLI will ask for confirmation before removing the account.
 
 <Tab title="Force Removal">
 ```shell
-relay account remove work --force
+relay accounts remove work --force
 ```
 
 **Aliases:** `--force`, `-f`, `-y`
@@ -138,7 +138,7 @@ This action is irreversible. You'll need to re-add the account if you want to us
 Verify that your account credentials are working and the server is reachable.
 
 ```shell
-relay account test work
+relay accounts test work
 ```
 
 This command will:
