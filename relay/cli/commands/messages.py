@@ -49,7 +49,7 @@ def _get_account_manager_and_client(account: str) -> tuple[AccountManager, Any, 
     if not account:
         accounts = manager.list_accounts()
         if not accounts:
-            console.print("[red]✗ No accounts configured. Use 'relay account add' to add an account.[/red]")
+            console.print("[red]✗ No accounts configured. Use 'relay accounts add' to add an account.[/red]")
             raise typer.Exit(1)
         account = accounts[0].name
         console.print(f"[dim]Using account: {account}[/dim]")
@@ -73,7 +73,7 @@ def _handle_common_errors(func: Callable) -> Callable:
             return func(*args, **kwargs)
         except AccountNotFoundError as e:
             console.print(f"[red]✗ {e}[/red]")
-            console.print("[dim]Use 'relay account list' to see available accounts[/dim]")
+            console.print("[dim]Use 'relay accounts ls' to see available accounts[/dim]")
             raise typer.Exit(1)
         except AuthenticationError as e:
             console.print(f"[red]✗ {e}[/red]")

@@ -108,7 +108,7 @@ main() {
 
     log ""
     log "🎉 Relay CLI installed successfully!"
-    log "Run 'relay account add' to get started"
+    log "Run 'relay accounts add' to get started"
     log "Documentation: https://docs.relaycli.com"
 }
 
