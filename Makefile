@@ -60,7 +60,7 @@ build: ${PYPROJECT_CONFIG_FILE} ## Build the package
 	uv build ${ENGINE_DIR}
 
 publish: ${ENGINE_DIR} ## Publish the package to PyPI
-	uv publish
+	uv publish --trusted-publishing always
 
 lock: ${PYPROJECT_CONFIG_FILE}
 	uv lock --project ${ENGINE_DIR}
