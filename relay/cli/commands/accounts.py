@@ -22,8 +22,8 @@ from relay.exceptions import (
     ServerConnectionError,
     ValidationError,
 )
-from relay.models.account import PROVIDER_CONFIGS, AccountCreate, EmailProvider
-from relay.providers.utils import resolve_provider
+from relay.models.account import AccountCreate, EmailProvider
+from relay.providers.utils import EMAIL_TO_PROVIDER, PROVIDER_INFO
 
 from .._utils import AliasGroup, create_accounts_table
 
@@ -117,24 +117,24 @@ def connect_account(
     final_provider = provider
     if not final_provider:
         email_domain = email.rpartition("@")[-1].lower()
-        final_provider = resolve_provider("", f"user@{email_domain}")
-        if final_provider == EmailProvider.CUSTOM:
+        final_provider = EMAIL_TO_PROVIDER.get(email_domain)
+        if final_provider is None:
             console.print(f"[yellow]Unknown provider for domain: {email_domain}[/yellow]")
             final_provider = _get_provider_choice()
 
     # Get server settings
     final_imap_server = imap_server
     if imap_server is None:
-        if final_provider in PROVIDER_CONFIGS:
-            final_imap_server = PROVIDER_CONFIGS[final_provider]["imap_server"]
+        if final_provider in PROVIDER_INFO:
+            final_imap_server = PROVIDER_INFO[final_provider]["imap"]["server"]
             console.print(f"[green]Using {final_provider.value} settings for IMAP server: {final_imap_server}[/green]")
         else:
             final_imap_server = Prompt.ask("IMAP server", default="imap.gmail.com")
 
     final_imap_port = imap_port
     if imap_port is None:
-        if final_provider in PROVIDER_CONFIGS:
-            final_imap_port = PROVIDER_CONFIGS[final_provider]["imap_port"]
+        if final_provider in PROVIDER_INFO:
+            final_imap_port = PROVIDER_INFO[final_provider]["imap"]["port"]
             console.print(f"[green]Using {final_provider.value} settings for IMAP port: {final_imap_port}[/green]")
         else:
             final_imap_port = int(Prompt.ask("IMAP port", default="993"))
