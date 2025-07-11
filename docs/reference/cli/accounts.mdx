@@ -1,0 +1,152 @@
+---
+title: 'Accounts'
+description: 'Manage the connections to your email accounts'
+icon: 'user'
+---
+
+What those CLI commands are for:
+- connecting email accounts
+- testing the connection with your credentials (stored locally, encrypted with a key you own)
+
+What they're not for:
+- creating or deleting email accounts
+
+Should you need help with the CLI syntax, you can always invoke:
+```shell
+relay accounts --help
+```
+
+## Connect an email account
+
+Add a new IMAP account with interactive setup. The CLI will auto-detect your email provider and configure the appropriate settings.
+
+<Tabs>
+<Tab title="Interactive Setup">
+```shell
+relay accounts add
+```
+
+Follow the prompts to enter your account details. The CLI will guide you through:
+- Account name (for reference)
+- Email address
+- Provider selection (auto-detected when possible)
+- Password (with confirmation)
+- Server settings (auto-configured for known providers)
+</Tab>
+
+<Tab title="Non-Interactive Setup">
+```shell
+relay accounts add \
+  --name "work" \
+  --email "user@company.com" \
+  --provider custom \
+  --imap-server "imap.company.com" \
+  --imap-port 993
+```
+
+<Info>
+For Gmail, Outlook, Yahoo, and iCloud, the CLI will automatically configure the correct server settings for `imap-server` and `imap-port`.
+</Info>
+</Tab>
+</Tabs>
+
+### Supported providers
+
+<CardGroup cols={2}>
+<Card title="Gmail" icon="envelope">
+Automatically configures `imap.gmail.com:993`
+</Card>
+
+<Card title="Outlook" icon="envelope">
+Automatically configures `outlook.office365.com:993`
+</Card>
+
+<Card title="Yahoo Mail" icon="envelope">
+Automatically configures `imap.mail.yahoo.com:993`
+</Card>
+
+<Card title="iCloud Mail" icon="envelope">
+Automatically configures `imap.mail.me.com:993`
+</Card>
+</CardGroup>
+
+<Warning>
+For Gmail, you'll need to use an App Password instead of your regular password. Generate one at [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords).
+</Warning>
+
+### Options
+
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--name` | `-n` | Account name for reference |
+| `--email` | `-e` | Email address |
+| `--provider` | `-p` | Email provider (gmail, outlook, yahoo, icloud, custom) |
+| `--imap-server` | | IMAP server address (for custom providers) |
+| `--imap-port` | | IMAP port (for custom providers) |
+
+## List email account connections
+
+Display all configured email accounts in a formatted table.
+
+```shell
+relay account list
+```
+
+**Alias:** `relay account ls`
+
+The output shows:
+- Account name
+- Email address
+- Provider type
+- IMAP server
+- IMAP port
+
+<Check>
+If no accounts are configured, the CLI will display a helpful message prompting you to add one.
+</Check>
+
+## Disconnect an email account
+
+Remove an account and its stored credentials from your system.
+
+<Tabs>
+<Tab title="With Confirmation">
+```shell
+relay account remove work
+```
+
+The CLI will ask for confirmation before removing the account.
+</Tab>
+
+<Tab title="Force Removal">
+```shell
+relay account remove work --force
+```
+
+**Aliases:** `--force`, `-f`, `-y`
+
+Removes the account without asking for confirmation.
+</Tab>
+</Tabs>
+
+<Warning>
+This action is irreversible. You'll need to re-add the account if you want to use it again.
+</Warning>
+
+## Test a connection
+
+Verify that your account credentials are working and the server is reachable.
+
+```shell
+relay account test work
+```
+
+This command will:
+- Connect to the IMAP server
+- Authenticate with your stored credentials
+- Verify the connection is working
+- Display success or error messages
+
+<Tip>
+Use this command to troubleshoot connection issues or verify your setup after adding an account.
+</Tip>

@@ -3,17 +3,11 @@ changelog:
     labels:
       - ignore-for-release
   categories:
-    - title: Breaking Changes 🛠
+    - title: Breaking changes 🛠
       labels: ["type: breaking change"]
-    - title: New Features ✨
-      labels: ["type: feat"]
+    - title: New features & enhancements ✨
+      labels: ["type: feat", "type: enhancement"]
     - title: Bug Fixes 🐛
       labels: ["type: fix"]
-    - title: Dependencies
-      labels: ["dependencies"]
     - title: Documentation 📖
       labels: ["service: docs"]
-    - title: Improvements
-      labels: ["type: improvement"]
-    - title: Other changes
-      labels: ["*"]

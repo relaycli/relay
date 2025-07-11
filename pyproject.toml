@@ -6,7 +6,7 @@ build-backend = "uv_build"
 name = "relaycli"
 version = "0.0.1.dev0"
 description = "Open-source IMAP-native replacement for Gmail API"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
 license = { file = "LICENSE" }
 authors = [{ name = "Relay team", email = "support@relaycli.com" }]
 readme = "README.md"
@@ -33,7 +33,6 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",

@@ -1,0 +1,181 @@
+---
+title: 'Messages'
+description: 'Manage your emails from your console'
+icon: 'message'
+---
+
+What those CLI commands are for:
+- reading emails from your connected accounts
+- sorting/processing them
+
+What they're not for:
+- sending bulk email campaigns (we love [Resend](https://resend.com) for that)
+
+Should you need help with the CLI syntax, you can always invoke:
+```shell
+relay messages --help
+```
+
+<Info>In IMAP, emails are bound to a folder. So if you move an email to another folder, it will create a new UID.
+Consider the MIME email head Message-ID if you want a global unique identifier for an email</Info>
+
+## List your recent emails
+
+Display your recent emails in a formatted table with UID, timestamp, sender, subject, and snippet.
+
+```shell
+relay messages list
+```
+
+**Alias:** `relay messages ls`
+
+Shows the 20 most recent emails from your first configured account.
+
+### Options
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--account` | `-a` | Account name to use | First configured account |
+| `--limit` | `-l` | Number of messages to fetch | 20 |
+| `--unread` | `-u` | Show only unread messages | false |
+
+<Check>
+The table displays: UID, Timestamp (UTC), From, Subject, and Snippet for easy scanning.
+</Check>
+
+## Search your inbox
+
+Search for messages containing specific text in the subject, sender, or body.
+
+
+```shell
+relay messages search "meeting"
+```
+
+**Aliases:** `relay messages find`, `relay messages grep`
+
+Searches through the most recent 100 messages for the term "meeting".
+
+### Search behavior
+
+The search function:
+- Searches in subject lines, sender addresses, and message body text
+- Is case-insensitive
+- Returns results sorted by date (newest first)
+- Shows the same table format as the list command
+
+<Tip>
+Use specific search terms to narrow down results. The search looks through subject, sender, and body content.
+</Tip>
+
+### Options
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--account` | `-a` | Account name to use | First configured account |
+| `--limit` | `-l` | Number of messages to search | 100 |
+
+## Read a specific email
+
+Display the full content of a specific email message by its UID.
+
+```shell
+relay messages open 12345
+```
+
+**Alias:** `relay messages cat`
+
+Opens the message with UID 12345 from your first configured account.
+
+### Message display
+
+The command shows:
+- **Message Details**: UID, timestamp, subject
+- **Headers**: From, CC, BCC
+- **Body**: Plain text content
+- **Attachments**: List with filenames, content types, and sizes
+
+<Info>
+The UID is specific to each account and folder. You can get UIDs from the `relay messages list` command.
+</Info>
+
+### Options
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--account` | `-a` | Account name to use | First configured account |
+
+## Move an email to trash
+
+Move a specific email message to the trash folder.
+
+```shell
+relay messages trash 12345
+```
+
+**Alias:** `relay messages rm`
+
+Moves the message with UID 12345 to trash.
+
+<Warning>
+This moves the email to your email provider's trash folder. The behavior depends on your email provider's trash handling.
+</Warning>
+
+### Options
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--account` | `-a` | Account name to use | First configured account |
+
+## Mark an email as spam
+
+Mark a specific email message as spam.
+
+```shell
+relay messages spam 12345
+```
+
+### Options
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--account` | `-a` | Account name to use | First configured account |
+
+## Mark an email as read/unread status
+
+Change the read status of a specific email message.
+
+<Tabs>
+<Tab title="Mark as Read">
+```shell
+relay messages mark read 12345
+```
+
+Marks the message with UID 12345 as read.
+</Tab>
+
+<Tab title="Mark as Unread">
+```shell
+relay messages mark unread 12345
+```
+
+Marks the message with UID 12345 as unread.
+</Tab>
+</Tabs>
+
+### Status options
+
+| Status | Description |
+|--------|-------------|
+| `read` | Mark the message as read |
+| `unread` | Mark the message as unread |
+
+### Options
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|---------|
+| `--account` | `-a` | Account name to use | First configured account |
+
+<Check>
+The read/unread status is synchronized with your email provider, so changes will be reflected in other email clients.
+</Check>

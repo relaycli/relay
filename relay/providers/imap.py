@@ -14,56 +14,16 @@ from socket import gaierror
 from typing import Any, cast
 
 from bs4 import BeautifulSoup
+from email_validator import EmailNotValidError, validate_email
 from html2text import html2text
 
 from ..exceptions import AuthenticationError, ServerConnectionError, ValidationError
 from ..models.account import EmailProvider
-from .utils import resolve_provider
+from .utils import EMAIL_TO_PROVIDER, IMAP_TO_PROVIDER, PROVIDER_INFO
 
 EMAIL_PATTERN = r"<[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}>"
 
 __all__ = ["IMAPClient"]
-
-EMAIL_PROVIDERS = {
-    EmailProvider.GMAIL: {
-        "email_domains": ["gmail.com", "googlemail.com"],
-        "server_domains": ["gmail.com"],
-        "folders": {
-            "inbox": "INBOX",
-            "trash": "[Gmail]/Trash",
-            "spam": "[Gmail]/Spam",
-            "sent": "[Gmail]/Sent Mail",
-            "drafts": "[Gmail]/Drafts",
-        },
-    },
-    EmailProvider.OUTLOOK: {
-        "email_domains": ["outlook.com", "hotmail.com", "hotmail.fr", "live.com"],
-        "server_domains": ["outlook.com", "office365.com"],
-        "folders": {
-            "inbox": "INBOX",
-            "trash": "Deleted Items",
-            "spam": "Junk Email",
-            "sent": "Sent Items",
-            "drafts": "Drafts",
-        },
-    },
-    EmailProvider.YAHOO: {
-        "email_domains": ["yahoo.com", "yahoo.co.uk", "yahoo.ca"],
-        "server_domains": ["yahoo.com"],
-        "folders": {"inbox": "INBOX", "trash": "Trash", "spam": "Bulk Mail", "sent": "Sent", "drafts": "Draft"},
-    },
-    EmailProvider.ICLOUD: {
-        "email_domains": ["icloud.com", "me.com", "mac.com"],
-        "server_domains": ["icloud.com", "me.com"],
-        "folders": {
-            "inbox": "INBOX",
-            "trash": "Deleted Messages",
-            "spam": "Junk",
-            "sent": "Sent Messages",
-            "drafts": "Drafts",
-        },
-    },
-}
 
 MIN_HEADERS = {"Message-ID", "Message-Id", "From", "To", "Subject", "Date", "CC", "BCC"}
 EXTRA_HEADERS = {"Delivered-To", "Sender", "References", "In-Reply-To", "Thread-Topic"}
@@ -71,44 +31,62 @@ SORTING_HEADERS = {"List-Unsubscribe", "List-Id", "Precedence", "Auto-Submitted"
 
 
 class IMAPClient:
-    """IMAP client for managing emails.
-
-    Args:
-        imap_server: IMAP server address
-        email_address: Email address
-        password: Password
-        imap_port: IMAP port
-        provider: Email provider
-        kwargs: Additional IMAP parameters
-
-    Raises:
-        ServerConnectionError: If IMAP server is not found
-        AuthenticationError: If IMAP credentials are invalid
-    """
+    """IMAP client for managing emails."""
 
     def __init__(
         self,
-        imap_server: str,
         email_address: str,
         password: str,
-        imap_port: int = 993,
         provider: str | EmailProvider | None = None,
+        imap_server: str | None = None,
+        imap_port: int = 993,
         **kwargs,
     ) -> None:
-        """Initialize the IMAP client."""
+        """Initialize the IMAP client.
+
+        Args:
+            email_address: Email address
+            password: Password
+            provider: Email provider
+            imap_server: IMAP server address
+            imap_port: IMAP port
+            kwargs: Additional IMAP parameters
+
+        Raises:
+            ServerConnectionError: If IMAP server is not found
+            AuthenticationError: If IMAP credentials are invalid
+            ValueError: If there are missing information
+        """
+        # Validate email format
+        try:
+            validate_email(email_address, check_deliverability=False)
+        except EmailNotValidError:
+            raise ValueError("Invalid email address")
+
+        # Provider resolution
+        if provider is None:
+            # Try with email
+            email_domain = email_address.rpartition("@")[-1].lower()
+            provider = EMAIL_TO_PROVIDER.get(email_domain)
+            if provider is None:
+                if imap_server is None:
+                    raise ValueError("Either specify a provider or IMAP server address")
+                provider = IMAP_TO_PROVIDER.get(imap_server, EmailProvider.CUSTOM)
+
         # Convert string provider to EmailProvider enum
         if isinstance(provider, str):
             provider = EmailProvider(provider)
 
-        # Auto-detect provider if not provided
-        if not provider:
-            provider = resolve_provider(imap_server, email_address)
+        if provider == EmailProvider.CUSTOM and imap_server is None:
+            raise ValueError("For custom provider, please specify a IMAP server address")
 
+        imap_server = imap_server or PROVIDER_INFO[provider]["imap"]["server"]
+        imap_port = imap_port or PROVIDER_INFO[provider]["imap"]["port"]
         # IMAP
         try:
             self._imap = IMAP4_SSL(imap_server, imap_port, **kwargs)
         except gaierror:
-            raise ServerConnectionError("IMAP server not found")
+            raise ServerConnectionError(f"Unable to connect to IMAP server {imap_server}:{imap_port}")
         # Prevent ASCII encoding errors
         # cf. https://github.com/trac-hacks/tracsql/issues/3
         password = password.replace("\xa0", " ")
@@ -118,17 +96,6 @@ class IMAPClient:
             raise AuthenticationError("Invalid IMAP credentials")
 
         self.provider = provider
-        self.config = EMAIL_PROVIDERS.get(
-            provider,
-            {
-                "folders": {
-                    "inbox": "INBOX",
-                    "trash": "Trash",
-                    "spam": "Spam",
-                    "sent": "Sent",
-                },
-            },
-        )
 
     def logout(self) -> None:
         """Logout from the IMAP server."""
@@ -341,7 +308,7 @@ class IMAPClient:
         self._select("INBOX", readonly=False)
 
         # First copy to trash folder
-        self._copy(uid, self.config["folders"]["trash"])
+        self._copy(uid, PROVIDER_INFO[self.provider]["folders"]["trash"])
 
         # Then mark as deleted
         self._flags(uid, "+", "\\Deleted")
@@ -381,7 +348,7 @@ class IMAPClient:
         self._select("INBOX", readonly=False)
 
         # First copy to spam folder
-        self._copy(uid, self.config["folders"]["spam"])
+        self._copy(uid, PROVIDER_INFO[self.provider]["folders"]["spam"])
 
         # Then mark as deleted from inbox
         self._flags(uid, "+", "\\Deleted")

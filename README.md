@@ -51,8 +51,9 @@ Relay helps builds create apps on email workflows. See it as a crossover between
 ### Fetching your unread emails
 
 ```shell
-$ relay messages ls --limit 10 --unread
-
+relay messages ls --limit 10 --unread
+```
+```
 Using account: piedpiper
                             Messages from richard@piedpiper.com
 ┏━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━┓
@@ -80,8 +81,9 @@ Showing 5 of 5 unread messages
 ### Reading email details
 
 ```shell
-$ relay messages cat 15443
-
+relay messages cat 15443
+```
+```
 Using account: piedpiper
 
 Message Details
@@ -96,7 +98,7 @@ BCC: N/A
 Message Body:
 The migration is done. Obviously.
 
-While you were all probably panicking about downtime (which never happened), 
+While you were all probably panicking about downtime (which never happened),
 I successfully migrated our entire server infrastructure to the new data center.
 
 Key accomplishments:
@@ -105,13 +107,13 @@ Key accomplishments:
 - Optimized database queries by 340%
 - Fixed 23 security vulnerabilities
 
-Richard, the system is now running at 99.97% efficiency. The remaining 0.03% 
+Richard, the system is now running at 99.97% efficiency. The remaining 0.03%
 is due to the laws of physics, which even I cannot override.
 
-Dinesh, I've documented everything in a way that even you might comprehend, 
+Dinesh, I've documented everything in a way that even you might comprehend,
 though I make no guarantees.
 
-The servers are purring like a well-fed cat. You may now return to your 
+The servers are purring like a well-fed cat. You may now return to your
 regularly scheduled mediocrity.
 
 --
@@ -137,15 +139,16 @@ pip install relaycli
 ```
 #### 2 - Connect your email account
 ```shell
-relay account add
+relay accounts add
 ```
 Follow the instructions to connect your email account.
 
 #### 3 - Play with the CLI
 
 ```shell
-$ relay messages --help
-
+relay messages --help
+```
+```
  Usage: relay messages [OPTIONS] COMMAND [ARGS]...
 
  Email message commands

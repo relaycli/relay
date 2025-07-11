@@ -1,5 +1,11 @@
 blank_issues_enabled: true
 contact_links:
+  - name: Documentation
+    url: https://docs.relaycli.com/
+    about: Please consult the documentation before creating an issue.
+  - name: Community
+    url: https://discord.gg/T4zbT7RcVy
+    about: Join our Discord community to ask questions and collaborate.
   - name: Usage questions
     url: https://github.com/relaycli/relay/discussions
     about: Ask questions and discuss with other Relay community members

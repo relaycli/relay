@@ -37,6 +37,18 @@
         ]
       },
       {
+        "tab": "Reference",
+        "groups": [
+          {
+            "group": "CLI reference",
+            "pages": [
+              "reference/cli/accounts",
+              "reference/cli/messages"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Changelog",
         "groups": [
           {
@@ -76,8 +88,9 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@relaycli.com"
+        "label": "Community",
+        "icon": "discord",
+        "href": "https://discord.gg/T4zbT7RcVy"
       }
     ],
     "primary": {
