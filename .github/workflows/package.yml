@@ -34,6 +34,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: ['3.10', '3.11', '3.12', '3.13']
         exclude:
+          # https://github.com/actions/setup-python/issues/808
           - os: macos-latest
             python: '3.10'
     steps:
@@ -141,6 +142,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: ['3.10', '3.11', '3.12', '3.13']
         exclude:
+          # https://github.com/actions/setup-python/issues/808
           - os: macos-latest
             python: '3.10'
     steps:
@@ -196,6 +198,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python: ['3.10', '3.11', '3.12', '3.13']
         exclude:
+          # https://github.com/actions/setup-python/issues/808
           - os: macos-latest
             python: '3.10'
     needs: publish
