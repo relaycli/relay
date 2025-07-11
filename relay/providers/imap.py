@@ -18,52 +18,11 @@ from html2text import html2text
 
 from ..exceptions import AuthenticationError, ServerConnectionError, ValidationError
 from ..models.account import EmailProvider
-from .utils import resolve_provider
+from .utils import EMAIL_PROVIDERS, resolve_provider
 
 EMAIL_PATTERN = r"<[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}>"
 
 __all__ = ["IMAPClient"]
-
-EMAIL_PROVIDERS = {
-    EmailProvider.GMAIL: {
-        "email_domains": ["gmail.com", "googlemail.com"],
-        "server_domains": ["gmail.com"],
-        "folders": {
-            "inbox": "INBOX",
-            "trash": "[Gmail]/Trash",
-            "spam": "[Gmail]/Spam",
-            "sent": "[Gmail]/Sent Mail",
-            "drafts": "[Gmail]/Drafts",
-        },
-    },
-    EmailProvider.OUTLOOK: {
-        "email_domains": ["outlook.com", "hotmail.com", "hotmail.fr", "live.com"],
-        "server_domains": ["outlook.com", "office365.com"],
-        "folders": {
-            "inbox": "INBOX",
-            "trash": "Deleted Items",
-            "spam": "Junk Email",
-            "sent": "Sent Items",
-            "drafts": "Drafts",
-        },
-    },
-    EmailProvider.YAHOO: {
-        "email_domains": ["yahoo.com", "yahoo.co.uk", "yahoo.ca"],
-        "server_domains": ["yahoo.com"],
-        "folders": {"inbox": "INBOX", "trash": "Trash", "spam": "Bulk Mail", "sent": "Sent", "drafts": "Draft"},
-    },
-    EmailProvider.ICLOUD: {
-        "email_domains": ["icloud.com", "me.com", "mac.com"],
-        "server_domains": ["icloud.com", "me.com"],
-        "folders": {
-            "inbox": "INBOX",
-            "trash": "Deleted Messages",
-            "spam": "Junk",
-            "sent": "Sent Messages",
-            "drafts": "Drafts",
-        },
-    },
-}
 
 MIN_HEADERS = {"Message-ID", "Message-Id", "From", "To", "Subject", "Date", "CC", "BCC"}
 EXTRA_HEADERS = {"Delivered-To", "Sender", "References", "In-Reply-To", "Thread-Topic"}
@@ -435,12 +394,14 @@ def parse_email_parts(email_message: EmailMessage, include_quoted_body: bool = F
                 body_html = part.get_payload(decode=True).decode("utf-8", errors="ignore")
             # Parse attachments
             if isinstance(part.get_content_disposition(), str) and part.get_content_disposition() == "attachment":
-                attachments.append({
-                    "filename": part.get_filename(),
-                    "content_type": part.get_content_type(),
-                    "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
-                    "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
-                })
+                attachments.append(
+                    {
+                        "filename": part.get_filename(),
+                        "content_type": part.get_content_type(),
+                        "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
+                        "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
+                    }
+                )
     else:
         body_plain = email_message.get_payload(decode=True).decode("utf-8", errors="ignore")
 
