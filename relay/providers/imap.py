@@ -394,14 +394,12 @@ def parse_email_parts(email_message: EmailMessage, include_quoted_body: bool = F
                 body_html = part.get_payload(decode=True).decode("utf-8", errors="ignore")
             # Parse attachments
             if isinstance(part.get_content_disposition(), str) and part.get_content_disposition() == "attachment":
-                attachments.append(
-                    {
-                        "filename": part.get_filename(),
-                        "content_type": part.get_content_type(),
-                        "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
-                        "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
-                    }
-                )
+                attachments.append({
+                    "filename": part.get_filename(),
+                    "content_type": part.get_content_type(),
+                    "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
+                    "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
+                })
     else:
         body_plain = email_message.get_payload(decode=True).decode("utf-8", errors="ignore")
 
