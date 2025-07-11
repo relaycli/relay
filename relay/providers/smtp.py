@@ -7,8 +7,11 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 from smtplib import SMTP_SSL
 
+from email_validator import EmailNotValidError, validate_email
+
 from ..exceptions import AuthenticationError
-from .utils import resolve_provider
+from ..models.account import EmailProvider
+from .utils import EMAIL_TO_PROVIDER, PROVIDER_INFO
 
 __all__ = ["SMTPClient"]
 
@@ -31,17 +34,33 @@ class SMTPClient:
 
     def __init__(
         self,
-        smtp_server: str,
         email_address: str,
         password: str,
+        provider: str | EmailProvider | None = None,
+        smtp_server: str | None = None,
         smtp_port: int = 465,
         sender_name: str | None = None,
-        provider: str | None = None,
         **kwargs,
     ) -> None:
         """Initialize the SMTP client."""
-        if not provider:
-            provider = resolve_provider(smtp_server, email_address)
+        # Validate email format
+        try:
+            validate_email(email_address, check_deliverability=False)
+        except EmailNotValidError:
+            raise ValueError("Invalid email address")
+
+        # Server resolution
+        if smtp_server is None:
+            if provider is None:
+                # Try with email
+                email_domain = email_address.rpartition("@")[-1].lower()
+                provider = EMAIL_TO_PROVIDER.get(email_domain)
+                if provider is None:
+                    raise ValueError("Either specify a provider or SMTP server address")
+            else:
+                provider = EmailProvider(provider)
+            smtp_server = smtp_server or PROVIDER_INFO[provider]["smtp"]["server"]
+            smtp_port = smtp_port or PROVIDER_INFO[provider]["smtp"]["port"]
         # SMTP
         self._smtp = SMTP_SSL(smtp_server, smtp_port, **kwargs)
         # Prevent ASCII encoding errors

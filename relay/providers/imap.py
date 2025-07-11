@@ -14,11 +14,12 @@ from socket import gaierror
 from typing import Any, cast
 
 from bs4 import BeautifulSoup
+from email_validator import EmailNotValidError, validate_email
 from html2text import html2text
 
 from ..exceptions import AuthenticationError, ServerConnectionError, ValidationError
 from ..models.account import EmailProvider
-from .utils import EMAIL_PROVIDERS, resolve_provider
+from .utils import EMAIL_TO_PROVIDER, IMAP_TO_PROVIDER, PROVIDER_INFO
 
 EMAIL_PATTERN = r"<[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}>"
 
@@ -33,41 +34,58 @@ class IMAPClient:
     """IMAP client for managing emails.
 
     Args:
-        imap_server: IMAP server address
         email_address: Email address
         password: Password
-        imap_port: IMAP port
         provider: Email provider
+        imap_server: IMAP server address
+        imap_port: IMAP port
         kwargs: Additional IMAP parameters
 
     Raises:
         ServerConnectionError: If IMAP server is not found
         AuthenticationError: If IMAP credentials are invalid
+        ValueError: If there are missing information
     """
 
     def __init__(
         self,
-        imap_server: str,
         email_address: str,
         password: str,
-        imap_port: int = 993,
         provider: str | EmailProvider | None = None,
+        imap_server: str | None = None,
+        imap_port: int = 993,
         **kwargs,
     ) -> None:
         """Initialize the IMAP client."""
+        # Validate email format
+        try:
+            validate_email(email_address, check_deliverability=False)
+        except EmailNotValidError:
+            raise ValueError("Invalid email address")
+
+        # Provider resolution
+        if provider is None:
+            # Try with email
+            email_domain = email_address.rpartition("@")[-1].lower()
+            provider = EMAIL_TO_PROVIDER.get(email_domain)
+            if provider is None:
+                if imap_server is None:
+                    raise ValueError("Either specify a provider or IMAP server address")
+                provider = IMAP_TO_PROVIDER.get(imap_server)
+            if provider is None:
+                raise ValueError("Could not resolve provider, please specify a provider")
+
         # Convert string provider to EmailProvider enum
         if isinstance(provider, str):
             provider = EmailProvider(provider)
 
-        # Auto-detect provider if not provided
-        if not provider:
-            provider = resolve_provider(imap_server, email_address)
-
+        imap_server = imap_server or PROVIDER_INFO[provider]["imap"]["server"]
+        imap_port = imap_port or PROVIDER_INFO[provider]["imap"]["port"]
         # IMAP
         try:
             self._imap = IMAP4_SSL(imap_server, imap_port, **kwargs)
         except gaierror:
-            raise ServerConnectionError("IMAP server not found")
+            raise ServerConnectionError(f"Unable to connect to IMAP server {imap_server}:{imap_port}")
         # Prevent ASCII encoding errors
         # cf. https://github.com/trac-hacks/tracsql/issues/3
         password = password.replace("\xa0", " ")
@@ -77,17 +95,6 @@ class IMAPClient:
             raise AuthenticationError("Invalid IMAP credentials")
 
         self.provider = provider
-        self.config = EMAIL_PROVIDERS.get(
-            provider,
-            {
-                "folders": {
-                    "inbox": "INBOX",
-                    "trash": "Trash",
-                    "spam": "Spam",
-                    "sent": "Sent",
-                },
-            },
-        )
 
     def logout(self) -> None:
         """Logout from the IMAP server."""
@@ -300,7 +307,7 @@ class IMAPClient:
         self._select("INBOX", readonly=False)
 
         # First copy to trash folder
-        self._copy(uid, self.config["folders"]["trash"])
+        self._copy(uid, PROVIDER_INFO[self.provider]["folders"]["trash"])
 
         # Then mark as deleted
         self._flags(uid, "+", "\\Deleted")
@@ -340,7 +347,7 @@ class IMAPClient:
         self._select("INBOX", readonly=False)
 
         # First copy to spam folder
-        self._copy(uid, self.config["folders"]["spam"])
+        self._copy(uid, PROVIDER_INFO[self.provider]["folders"]["spam"])
 
         # Then mark as deleted from inbox
         self._flags(uid, "+", "\\Deleted")
@@ -394,12 +401,14 @@ def parse_email_parts(email_message: EmailMessage, include_quoted_body: bool = F
                 body_html = part.get_payload(decode=True).decode("utf-8", errors="ignore")
             # Parse attachments
             if isinstance(part.get_content_disposition(), str) and part.get_content_disposition() == "attachment":
-                attachments.append({
-                    "filename": part.get_filename(),
-                    "content_type": part.get_content_type(),
-                    "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
-                    "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
-                })
+                attachments.append(
+                    {
+                        "filename": part.get_filename(),
+                        "content_type": part.get_content_type(),
+                        "content": base64.b64encode(part.get_payload(decode=True) or b"").decode("utf-8"),
+                        "size": len(part.get_payload(decode=True)) if part.get_payload(decode=True) else 0,
+                    }
+                )
     else:
         body_plain = email_message.get_payload(decode=True).decode("utf-8", errors="ignore")
 

@@ -6,12 +6,32 @@
 
 from ..models.base import EmailProvider
 
-__all__ = ["resolve_provider"]
+__all__ = ["EMAIL_TO_PROVIDER", "IMAP_TO_PROVIDER", "PROVIDER_INFO", "SMTP_TO_PROVIDER"]
 
-EMAIL_PROVIDERS = {
+
+PROVIDER_DOMAINS = {
+    EmailProvider.GMAIL: ["gmail.com", "googlemail.com"],
+    EmailProvider.OUTLOOK: ["outlook.com", "hotmail.com", "hotmail.fr", "live.com"],
+    EmailProvider.YAHOO: ["yahoo.com", "yahoo.co.uk", "yahoo.ca"],
+    EmailProvider.ICLOUD: ["icloud.com", "me.com", "mac.com"],
+}
+
+EMAIL_TO_PROVIDER: dict[str, EmailProvider] = {
+    domain: provider for provider, domains in PROVIDER_DOMAINS.items() for domain in domains
+}
+
+
+PROVIDER_INFO = {
+    # https://support.google.com/a/answer/9003945
     EmailProvider.GMAIL: {
-        "email_domains": ["gmail.com", "googlemail.com"],
-        "server_domains": ["gmail.com"],
+        "imap": {
+            "server": "imap.gmail.com",
+            "port": 993,
+        },
+        "smtp": {
+            "server": "smtp.gmail.com",
+            "port": 465,
+        },
         "folders": {
             "inbox": "INBOX",
             "trash": "[Gmail]/Trash",
@@ -20,9 +40,16 @@ EMAIL_PROVIDERS = {
             "drafts": "[Gmail]/Drafts",
         },
     },
+    # https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040
     EmailProvider.OUTLOOK: {
-        "email_domains": ["outlook.com", "hotmail.com", "hotmail.fr", "live.com"],
-        "server_domains": ["outlook.com", "office365.com"],
+        "imap": {
+            "server": "outlook.office365.com",
+            "port": 993,
+        },
+        "smtp": {
+            "server": "smtp-mail.outlook.com",
+            "port": 465,
+        },
         "folders": {
             "inbox": "INBOX",
             "trash": "Deleted Items",
@@ -31,14 +58,28 @@ EMAIL_PROVIDERS = {
             "drafts": "Drafts",
         },
     },
+    # https://help.yahoo.com/kb/SLN4075.html
     EmailProvider.YAHOO: {
-        "email_domains": ["yahoo.com", "yahoo.co.uk", "yahoo.ca"],
-        "server_domains": ["yahoo.com"],
+        "imap": {
+            "server": "imap.mail.yahoo.com",
+            "port": 993,
+        },
+        "smtp": {
+            "server": "smtp.mail.yahoo.com",
+            "port": 465,
+        },
         "folders": {"inbox": "INBOX", "trash": "Trash", "spam": "Bulk Mail", "sent": "Sent", "drafts": "Draft"},
     },
+    # https://support.apple.com/en-us/102525
     EmailProvider.ICLOUD: {
-        "email_domains": ["icloud.com", "me.com", "mac.com"],
-        "server_domains": ["icloud.com", "me.com"],
+        "imap": {
+            "server": "imap.mail.me.com",
+            "port": 993,
+        },
+        "smtp": {
+            "server": "smtp.mail.me.com",
+            "port": 465,
+        },
         "folders": {
             "inbox": "INBOX",
             "trash": "Deleted Messages",
@@ -49,28 +90,9 @@ EMAIL_PROVIDERS = {
     },
 }
 
-
-def resolve_provider(server: str, email_address: str) -> EmailProvider:
-    """Detect email provider from server address or email domain.
-
-    Args:
-        server: Server address
-        email_address: Email address
-
-    Returns:
-        Email provider
-    """
-    # First try to detect by server address
-    for provider, config in EMAIL_PROVIDERS.items():
-        if any(server.endswith(domain) for domain in config["server_domains"]):
-            return provider
-
-    # Fall back to email domain detection
-    if "@" in email_address:
-        email_domain = email_address.rpartition("@")[-1].lower()
-        for provider, config in EMAIL_PROVIDERS.items():
-            if email_domain in config["email_domains"]:
-                return provider
-
-    # Default to custom if no match found
-    return EmailProvider.CUSTOM
+IMAP_TO_PROVIDER: dict[str, EmailProvider] = {
+    config["imap"]["server"]: provider for provider, config in PROVIDER_INFO.items()
+}
+SMTP_TO_PROVIDER: dict[str, EmailProvider] = {
+    config["smtp"]["server"]: provider for provider, config in PROVIDER_INFO.items()
+}
