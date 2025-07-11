@@ -27,36 +27,16 @@ description: 'From zero to "Hello inbox" in under 5 minutes'
     </Tabs>
   </Step>
   <Step title="Install the CLI">
-    <Tabs>
-      <Tab title="macOS & Linux">
-        <CodeGroup>
-        ```shell title="curl" icon="code"
-        curl -sSL https://github.com/relaycli/relay/releases/download/v0.0.1-alpha.2/install.sh | bash
-        ```
-        ```shell title="wget" icon="code"
-        wget -qO- https://github.com/relaycli/relay/releases/download/v0.0.1-alpha.2/install.sh | bash
-        ```
-        ```shell title="pip" icon="python"
-        pip install relaycli
-        ```
-        ```shell title="uv" icon="python"
-        uv pip install --system relaycli
-        ```
-        </CodeGroup>
-        If you encounter issues, please follow the installation steps for either [pip](https://pip.pypa.io/en/stable/installation/) or [uv](https://docs.astral.sh/uv/getting-started/installation) and then run the corresponding installation command.
-      </Tab>
-      <Tab title="Windows">
-        <CodeGroup>
-        ```shell title="pip" icon="python"
-        pip install relaycli
-        ```
-        ```shell title="uv" icon="python"
-        uv pip install --system relaycli
-        ```
-        </CodeGroup>
-        If you encounter issues, please follow the installation steps for either [pip](https://pip.pypa.io/en/stable/installation/) or [uv](https://docs.astral.sh/uv/getting-started/installation) and then run the corresponding installation command.
-      </Tab>
-    </Tabs>
+    <CodeGroup>
+    ```shell title="pip" icon="python"
+    pip install relaycli
+    ```
+    ```shell title="uv" icon="zap"
+    uv pip install --system relaycli
+    ```
+    </CodeGroup>
+
+    If you encounter issues, please follow the installation steps for either [pip](https://pip.pypa.io/en/stable/installation/) or [uv](https://docs.astral.sh/uv/getting-started/installation) and then run the corresponding installation command.
   </Step>
   <Step title="Connect the inbox">
     ```shell
