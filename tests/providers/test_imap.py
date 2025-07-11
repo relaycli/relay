@@ -56,7 +56,7 @@ def test_imap_client_init(mocker: MockerFixture):
     mock_imap_instance = mock_imap_ssl.return_value
     mock_imap_instance.login.return_value = ("OK", [b"Login successful"])
 
-    client = IMAPClient("imap.example.com", "user@example.com", "password")
+    client = IMAPClient("user@example.com", "password", imap_server="imap.example.com")
 
     mock_imap_ssl.assert_called_once_with("imap.example.com", 993)
     mock_imap_instance.login.assert_called_once_with("user@example.com", "password")
@@ -78,7 +78,7 @@ def test_imap_client_connection_failure(mocker: MockerFixture):
     mocker.patch("relay.providers.imap.IMAP4_SSL", side_effect=ServerConnectionError("IMAP server not found"))
 
     with pytest.raises(ServerConnectionError):
-        IMAPClient("imap.example.com", "user@example.com", "password")
+        IMAPClient("user@example.com", "password", imap_server="imap.example.com")
 
 
 def test_list_email_uids(mocker: MockerFixture):
@@ -92,7 +92,7 @@ def test_list_email_uids(mocker: MockerFixture):
     mock_imap_instance.uid.return_value = ("OK", [b"1 2 3 4 5"])
     mock_imap_instance.close.return_value = ("OK", [b""])
 
-    client = IMAPClient("imap.example.com", "user@example.com", "password")
+    client = IMAPClient("user@example.com", "password", imap_server="imap.example.com")
     uids = client.list_email_uids()
 
     mock_imap_instance.select.assert_called_once_with("INBOX", readonly=True)
